@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.team2.csc413.barkpark" >
+    package="com.team2.csc413.parkbark" >
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SplashScreen"
+            android:name="com.team2.csc413.parkbark.SplashScreen"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,12 +23,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.team2.csc413.parkbark.MainActivity"
             android:label="@string/title_activity_main"
-            android:parentActivityName=".SplashScreen" >
+            android:parentActivityName="com.team2.csc413.parkbark.SplashScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SplashScreen" />
+                android:value="com.team2.csc413.parkbark.SplashScreen" />
         </activity>
 
         <meta-data

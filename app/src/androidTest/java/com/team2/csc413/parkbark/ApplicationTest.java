@@ -1,4 +1,4 @@
-package com.team2.csc413.barkpark;
+package com.team2.csc413.parkbark;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

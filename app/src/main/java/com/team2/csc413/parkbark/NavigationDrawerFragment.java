@@ -1,9 +1,6 @@
-package com.team2.csc413.barkpark;
+package com.team2.csc413.parkbark;
 
 import android.content.Context;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
