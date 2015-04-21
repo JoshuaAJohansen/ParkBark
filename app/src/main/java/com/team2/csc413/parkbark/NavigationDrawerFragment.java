@@ -1,6 +1,9 @@
 package com.team2.csc413.parkbark;
 
 import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -23,15 +26,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+//TODO Section 1: This section will be where it starts, major map interaction (parking) can be interact here
+//TODO Section 2: Parking history, this will display all the history parked place on the map (SQLite Data of course)
+//TODO Section 3: ??????
+//TODO Add Setting activity
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
-
-
-    Context mContext;
 
 
     /**
@@ -253,9 +258,9 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.current_location) {
-/*
-            //TODO FInd a way to receive location info
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+            LocationManager locationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
 
             Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
@@ -266,11 +271,7 @@ public class NavigationDrawerFragment extends Fragment {
             String Text = "Current Location: \n" +
                     "Latitude: " + location.getLatitude() + "\n" +
                     "Longitude: " + location.getLongitude();
-*/
 
-            String Text = "Current Location: \n" +
-                    "Latitude: " + "some latitude" + "\n" +
-                    "Longitude: " + "some longitude";
             Toast.makeText(getActivity(), Text, Toast.LENGTH_SHORT).show();
             return true;
         }
