@@ -73,35 +73,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Park_Button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
-
-                LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if(location == null){
-                    Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
-                }else if(ParkMarker == null) {
-
-                    LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
-                    ParkMarker = mMap.addMarker(new MarkerOptions()
-                                                    .position(PARKED)
-                                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
-
-                    String Text = "Parking Location: \n" +
-                            "Latitude: " + location.getLatitude() + "\n" +
-                            "Longitude: " + location.getLongitude();
-
-                    Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
-
-
-                }else if(ParkMarker != null){
-
-                    mMap.clear();
-
-                    Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
-
-                    ParkMarker = null;
-                }
+                setParkMarker();
             }
+
         });
 
     }
@@ -228,6 +202,35 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+        }
+    }
+
+    private void setParkMarker(){
+        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(location == null){
+            Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
+        }else if(ParkMarker == null) {
+
+            LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
+            ParkMarker = mMap.addMarker(new MarkerOptions()
+                    .position(PARKED)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
+
+            String Text = "Parking Location: \n" +
+                    "Latitude: " + location.getLatitude() + "\n" +
+                    "Longitude: " + location.getLongitude();
+
+            Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
+
+
+        }else{
+
+            mMap.clear();
+
+            Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
+
+            ParkMarker = null;
         }
     }
 }
