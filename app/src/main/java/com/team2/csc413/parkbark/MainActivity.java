@@ -51,7 +51,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     String serviceURL;// = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.718031&long=-122.484786&radius=0.25&uom=mile&response=json";
     String apiReturn;
     ImageButton Park_Button = null;
-
+    ImageButton SFPark_Button = null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -80,8 +80,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ImageButton Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
-        final ImageButton SFPark_Button = (ImageButton) findViewById(R.id.SFPark_Btn);
+        //Button initialization
+        Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+        SFPark_Button = (ImageButton) findViewById(R.id.SFPark_Btn);
+
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -103,6 +106,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             }
 
         });
+
+        //SFPark Button On-Click listener
         SFPark_Button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -246,8 +251,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     private void setParkMarker(){
-        //LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        //Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if(location == null){
             Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
         }else if(ParkMarker == null) {
@@ -280,6 +285,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private void readSFPark() throws IOException{
         InputStream is = null;
         int len = 500;
+        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         try{
             serviceURL = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=" +
@@ -300,8 +307,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             if(is!=null) is.close();
         }
     }
+
     public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
+        Reader reader;
         reader = new InputStreamReader(stream, "UTF-8");
         char[] buffer = new char[len];
         reader.read(buffer);
