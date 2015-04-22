@@ -264,9 +264,6 @@ public class NavigationDrawerFragment extends Fragment {
             Criteria criteria = new Criteria();
 
             Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-            if (location != null){
-                Toast.makeText(getActivity(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
-            }
 
             String Text = "Current Location: \n" +
                     "Latitude: " + location.getLatitude() + "\n" +
