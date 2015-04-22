@@ -16,18 +16,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+//TODO Include Park button that store park location through SQLite
+
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
+    Marker ParkMarker = null;
+    ImageButton Park_Button = null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,6 +54,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -56,6 +68,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        //Park Button On-Click listener
+        Park_Button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                setParkMarker();
+            }
+
+        });
 
     }
 
@@ -181,6 +202,38 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     .build();                   // Creates a CameraPosition from the builder
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+        }
+    }
+
+    private void setParkMarker(){
+        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if(location == null){
+            Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
+        }else if(ParkMarker == null) {
+
+            LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
+            ParkMarker = mMap.addMarker(new MarkerOptions()
+                    .position(PARKED)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
+
+            String Text = "Parking Location: \n" +
+                    "Latitude: " + location.getLatitude() + "\n" +
+                    "Longitude: " + location.getLongitude();
+
+            Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
+
+            Park_Button.setBackgroundResource(R.drawable.leave_btn);
+
+        }else{
+
+            mMap.clear();
+
+            Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
+
+            Park_Button.setBackgroundResource(R.drawable.park_btn);
+
+            ParkMarker = null;
         }
     }
 }
