@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-//TODO Include Park button that store park location and mark it on the map
+//TODO Include Park button that store park location through SQLite
 
 
 
@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     GoogleMap mMap;
     Marker ParkMarker = null;
-
+    ImageButton Park_Button = null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ImageButton Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+        Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -223,12 +223,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
 
+            Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
         }else{
 
             mMap.clear();
 
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
+
+            Park_Button.setBackgroundResource(R.drawable.park_btn);
 
             ParkMarker = null;
         }

@@ -28,8 +28,8 @@ import android.widget.Toast;
 
 //TODO Section 1: This section will be where it starts, major map interaction (parking) can be interact here
 //TODO Section 2: Parking history, this will display all the history parked place on the map (SQLite Data of course)
-//TODO Section 3: ??????
-//TODO Add Setting activity
+//TODO Section 3: Think of something else that would be a special feature
+
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -265,7 +265,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
             if (location != null){
-
+                Toast.makeText(getActivity(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
             }
 
             String Text = "Current Location: \n" +
