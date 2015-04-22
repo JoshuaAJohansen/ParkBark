@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -29,7 +30,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-//TODO Include Park button that store park location through SQLite
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+//TODO Include Park button that store park location and mark it on the map
 
 
 
@@ -37,7 +46,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     GoogleMap mMap;
     Marker ParkMarker = null;
+    LocationManager locationmanager;
+    Location location;
+    String serviceURL;// = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=37.718031&long=-122.484786&radius=0.25&uom=mile&response=json";
+    String apiReturn;
     ImageButton Park_Button = null;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -51,11 +65,23 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog()
+                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
-
+        final ImageButton Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+        final ImageButton SFPark_Button = (ImageButton) findViewById(R.id.SFPark_Btn);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -74,6 +100,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             @Override
             public void onClick(View v){
                 setParkMarker();
+            }
+
+        });
+        SFPark_Button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                try {
+                    readSFPark();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(getApplicationContext(), apiReturn, Toast.LENGTH_LONG).show();
             }
 
         });
@@ -206,8 +246,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     private void setParkMarker(){
-        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        //Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if(location == null){
             Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
         }else if(ParkMarker == null) {
@@ -221,7 +261,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     "Latitude: " + location.getLatitude() + "\n" +
                     "Longitude: " + location.getLongitude();
 
-            Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_LONG).show();
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
@@ -235,5 +275,36 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             ParkMarker = null;
         }
+    }
+
+    private void readSFPark() throws IOException{
+        InputStream is = null;
+        int len = 500;
+
+        try{
+            serviceURL = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat=" +
+                    location.getLatitude()+"&long="+location.getLongitude()+"&radius=0.25&uom=mile&response=json";
+            URL url = new URL(serviceURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000 /* milliseconds */);
+            conn.setConnectTimeout(15000 /* milliseconds */);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            conn.connect();
+            is = conn.getInputStream();
+            apiReturn = readIt(is, len);
+            //apiReturn = serviceURL;
+        }catch(IOException e) {
+            apiReturn = "damn!";
+        }finally {
+            if(is!=null) is.close();
+        }
+    }
+    public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        Reader reader = null;
+        reader = new InputStreamReader(stream, "UTF-8");
+        char[] buffer = new char[len];
+        reader.read(buffer);
+        return new String(buffer);
     }
 }
