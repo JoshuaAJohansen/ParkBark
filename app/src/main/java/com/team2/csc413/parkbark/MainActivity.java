@@ -29,7 +29,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-//TODO Include Park button that store park location through SQLite in SQlite stuff
+//TODO Include Park button that store park location through SQLite
+//TODO Check if a database exist, if exist just access it. If not, create one.
+//TODO SQLite Columns: Date | Time | Latitude | Longitude | Time Parked | Time Restriction at time |
 
 
 
