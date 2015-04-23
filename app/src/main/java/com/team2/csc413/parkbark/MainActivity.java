@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-//TODO Include Park button that store park location through SQLite
+//TODO Include Park button that store park location through SQLite in SQlite stuff
 
 
 
