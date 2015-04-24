@@ -30,8 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 //TODO Include Park button that store park location through SQLite
-//TODO Check if a database exist, if exist just access it. If not, create one.
-//TODO SQLite Columns: Date | Time | Latitude | Longitude | Time Parked | Time Restriction at time |
+
 
 
 
@@ -72,9 +71,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         //Park Button On-Click listener
-        Park_Button.setOnClickListener(new View.OnClickListener(){
+        Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 setParkMarker();
             }
 
@@ -182,7 +181,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 
-    private void setMapUI(){
+    private void setMapUI() {
         mMap.setMyLocationEnabled(true);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMyLocationButtonEnabled(true);
@@ -191,8 +190,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Criteria criteria = new Criteria();
 
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        if (location != null)
-        {
+        if (location != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
@@ -207,14 +205,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    private void setParkMarker(){
-        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    private void setParkMarker() {
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(location == null){
+        if (location == null) {
             Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
-        }else if(ParkMarker == null) {
+        } else if (ParkMarker == null) {
 
-            LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
+            LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
             ParkMarker = mMap.addMarker(new MarkerOptions()
                     .position(PARKED)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
@@ -227,7 +225,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-        }else{
+        } else {
 
             mMap.clear();
 
