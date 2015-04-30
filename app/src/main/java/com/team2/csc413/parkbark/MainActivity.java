@@ -1,6 +1,7 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,14 +34,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 //TODO Include Park button that store park location through SQLite
 
 
-
-
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+    long sqlID;
 
+    private SQLiteDatabase database;
+
+
+    SQLiteDatabaseAdapter dbAdapter;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -50,10 +55,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      */
     private CharSequence mTitle;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        dbAdapter = new SQLiteDatabaseAdapter(this);
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
 
@@ -74,7 +83,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setParkMarker();
+                setParkMarker(v);
+
             }
 
         });
@@ -205,7 +215,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    private void setParkMarker() {
+    private void setParkMarker(View v) {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location == null) {
@@ -225,6 +235,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
+            addParkingSpot(v);
+
+            if (sqlID < 0) {
+                Log.d("SQLTag", "id=" + sqlID);
+            } else {
+                Log.d("SQLTag", "Successful id=" + sqlID);
+            }
+
         } else {
 
             mMap.clear();
@@ -236,4 +254,25 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             ParkMarker = null;
         }
     }
+
+    public void addParkingSpot(View view) {
+
+        Log.d("SQLTag", "Enter SQL function");
+
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        String date = "date";
+        String time = "time";
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        String duration = "duration";
+        String restriction = "restriction";
+
+        sqlID = dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
+
+
+    }
+
 }
