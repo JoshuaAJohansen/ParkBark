@@ -32,8 +32,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 
 //TODO Include Park button that store park location through SQLite
@@ -48,8 +46,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     //LocationManager locationmanager;
     Location location;
-    String[] streetName;
-    String parkPlace;
+    String streetNames;
     SFParking sfParking = new SFParking();
 
     /**
@@ -102,22 +99,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                 try {
                     sfParking.readSFPark(location);
-                    sfParking.parse();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }catch (IOException e) {
                     e.printStackTrace();
                 }
-                streetName = sfParking.getParkingInfo();
-                parkPlace = String.valueOf(streetName);
-                //for (int x=0; x<streetName.length; x++) parkPlace = parkPlace + streetName[x];
+
+                streetNames = sfParking.getParkingInfo();
 
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 // Setting Dialog Title
-                alertDialog.setTitle("Parking spot");
+                alertDialog.setTitle("Available Parking Places");
                 // Setting Dialog Message
-                alertDialog.setMessage(parkPlace);
+                alertDialog.setMessage(streetNames);
                 // Setting Icon to Dialog
                 //alertDialog1.setIcon(R.drawable.);
                 // Setting OK Button
