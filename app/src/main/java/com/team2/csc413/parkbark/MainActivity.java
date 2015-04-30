@@ -1,9 +1,12 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -29,6 +32,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 //TODO Include Park button that store park location through SQLite
 
 
@@ -38,6 +45,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+
+    //LocationManager locationmanager;
+    Location location;
+    String[] streetName;
+    String parkPlace;
+    SFParking sfParking = new SFParking();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -51,6 +64,18 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                .penaltyLog()
+                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -73,7 +98,37 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Park_Button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                setParkMarker();
+                //setParkMarker();
+
+                try {
+                    sfParking.readSFPark(location);
+                    sfParking.parse();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+                streetName = sfParking.getParkingInfo();
+                parkPlace = String.valueOf(streetName);
+                //for (int x=0; x<streetName.length; x++) parkPlace = parkPlace + streetName[x];
+
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                // Setting Dialog Title
+                alertDialog.setTitle("Parking spot");
+                // Setting Dialog Message
+                alertDialog.setMessage(parkPlace);
+                // Setting Icon to Dialog
+                //alertDialog1.setIcon(R.drawable.);
+                // Setting OK Button
+                alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        // closed
+                    }
+                });
+                // Showing Alert Message
+                alertDialog.show();
             }
 
         });
