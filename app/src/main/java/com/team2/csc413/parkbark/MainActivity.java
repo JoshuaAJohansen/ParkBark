@@ -33,7 +33,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 
-
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
@@ -228,6 +227,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         } else {
 
             mMap.clear();
+
 
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
