@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -32,7 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
+import java.util.*;
 
 //TODO Include Park button that store park location through SQLite
 
@@ -44,10 +45,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
 
-    //LocationManager locationmanager;
-    Location location;
-    String streetNames;
-    SFParking sfParking = new SFParking();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -91,38 +88,66 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        //Park Button On-Click listener
+        // Park Button On-Click listener
+        // needs modification for current class
         Park_Button.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v){
-                //setParkMarker();
+            public void onClick(View v) {
 
-                try {
-                    sfParking.readSFPark(location);
-                }catch (IOException e) {
-                    e.printStackTrace();
+                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                if (location == null) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("Location not found");
+                    alertDialog.setMessage("we regret to inform you, your last known location could not be found");
+                    alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // closed
+                        }
+                    });
+                    // Showing Alert Message
+                    alertDialog.show();
+
+
+                } else {
+                    String streetNames = "";
+
+                    SFParking.service.getParkingList(location);
+                    List park_li = SFParking.service.getParkingList();
+
+                    if (SFParking.service.getStatus().equals("SUCCESS")) {
+
+                        for (int i = 0; i < SFParking.service.getNum_records(); i++) {
+                            SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
+
+                            streetNames += place.getName() + "\n";
+
+                            SFParking.OPHRS ophrs = (SFParking.OPHRS) place.getOPHRS();
+
+                            if (ophrs != null) {
+                                streetNames += "from: " + ophrs.getFrom() + "\nto: " + ophrs.getTo()
+                                        + "\nbeggining: " + ophrs.getBeg() + "\nend: " + ophrs.getEnd() + "\n";
+
+                            }
+                        }
+                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        alertDialog.setTitle("Available Parking Places");
+                        alertDialog.setMessage(streetNames);
+                        alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {}
+                        });
+                        alertDialog.show();
+
+                    } else {
+                        Log.d(null, "Application can not connect to SF Parking service");
+                    }
+
                 }
 
-                streetNames = sfParking.getParkingInfo();
-
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                // Setting Dialog Title
-                alertDialog.setTitle("Available Parking Places");
-                // Setting Dialog Message
-                alertDialog.setMessage(streetNames);
-                // Setting Icon to Dialog
-                //alertDialog1.setIcon(R.drawable.);
-                // Setting OK Button
-                alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        // closed
-                    }
-                });
-                // Showing Alert Message
-                alertDialog.show();
             }
-
         });
 
     }
