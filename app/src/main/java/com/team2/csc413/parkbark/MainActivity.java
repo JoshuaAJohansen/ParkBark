@@ -34,18 +34,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 //TODO Include Park button that store park location through SQLite
 
 
-
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
-    long sqlID;
-
-    private SQLiteDatabase database;
-
 
     SQLiteDatabaseAdapter dbAdapter;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -64,6 +60,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
 
         dbAdapter = new SQLiteDatabaseAdapter(this);
+
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
 
@@ -238,11 +235,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             addParkingSpot(v);
 
-            if (sqlID < 0) {
-                Log.d("SQLTag", "id=" + sqlID);
-            } else {
-                Log.d("SQLTag", "Successful id=" + sqlID);
-            }
 
         } else {
 
@@ -271,7 +263,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         String duration = "duration";
         String restriction = "restriction";
 
-        sqlID = dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
+        dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
 
     }
