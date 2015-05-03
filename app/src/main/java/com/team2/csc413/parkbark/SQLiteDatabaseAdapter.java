@@ -2,6 +2,7 @@ package com.team2.csc413.parkbark;
 
 import android.content.Context;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -110,6 +111,22 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
         db.close();
         Log.d("SQLTag", "insertParkingSpot: close()");
+
+    }
+
+    public void onDestroy(SQLiteDatabase db){
+
+        db.execSQL(DROP_TABLE);
+        Log.d("SQLTag", "Delete table");
+
+    }
+
+    public Cursor getAllParkingSpot(){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.query(TABLE_NAME, new String[] {UID, DATE, TIME, LAT, LNG, DURATION, RESTRICTION},
+                null, null, null, null, null, null);
 
     }
 
