@@ -1,6 +1,7 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
@@ -30,6 +31,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 //TODO Include Park button that store park location through SQLite
 
@@ -91,6 +95,18 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+
+        switch(position){
+            case 0:
+                break;
+            case 1:
+                showHistoryParking();
+                break;
+            case 2:
+                break;
+        }
+
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -256,8 +272,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        String date = "date";
-        String time = "time";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
+
+        String date = dateFormat.format(c.getTime());
+        String time = timeFormat.format(c.getTime());
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         String duration = "duration";
@@ -265,6 +286,35 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
+    }
+
+    public void showHistoryParking(){
+        String getUID, getDATE, getTIME, getDURATION, getRESTRICTION;
+        double getLAT, getLNG;
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        mMap.clear();
+
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if(cursor.moveToFirst()){
+            do{
+                getUID = cursor.getString(0);
+                getDATE = cursor.getString(1);
+                getTIME = cursor.getString(2);
+                getLAT = cursor.getFloat(3);
+                getLNG = cursor.getFloat(4);
+                getDURATION = cursor.getString(5);
+                getRESTRICTION = cursor.getString(6);
+
+                LatLng marker = new LatLng(getLAT, getLNG);
+                Marker historyMarker = mMap.addMarker(new MarkerOptions()
+                                                            .position(marker));
+
+            }while(cursor.moveToNext());
+        }
 
     }
 

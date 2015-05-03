@@ -128,6 +128,7 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         return db.query(TABLE_NAME, new String[] {UID, DATE, TIME, LAT, LNG, DURATION, RESTRICTION},
                 null, null, null, null, null, null);
 
+
     }
 
 }
