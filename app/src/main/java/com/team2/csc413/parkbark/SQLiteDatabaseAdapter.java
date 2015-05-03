@@ -48,11 +48,9 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
     private static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME + " IF EXISTS";
 
-    //Successfully calls constructor
     public SQLiteDatabaseAdapter(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
-
     }
 
     @Override
@@ -76,7 +74,21 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertParkingSpot(String DATE, String TIME, double LATITUDE, double LONGITUDE, String DURATION, String RESTRICTION) {
+    //TODO find way to generate current date and time.
+    /**
+     * Inserts row with data of parking spot to the database. Information
+     * is generated through location information.
+     *
+     * @param DATE          date when the car was parked day/month/year.
+     * @param TIME          time car was parked using military time
+     * @param LATITUDE      gps coordinates for latitude where car was parked
+     * @param LONGITUDE     gps coordinates for longitude where car was parked
+     * @param DURATION      duration the car was intended to be parked
+     * @param RESTRICTION   parking restrictions for current location
+     */
+    public void insertParkingSpot(String DATE, String TIME, double LATITUDE, double LONGITUDE,
+                                  String DURATION, String RESTRICTION)
+    {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("SQLTag", "insertParkingSpot: getWritableDatabase()");
