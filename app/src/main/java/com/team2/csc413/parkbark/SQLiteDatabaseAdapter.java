@@ -59,17 +59,17 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         Log.d("SQLTag", "Created table");
     }
 
+
+    /**
+     * Drop's the table of the database and calls onCreate to create
+     * new table with new schema
+     *
+     * @param db         The database
+     * @param oldVersion The old database version.
+     * @param newVersion The new database version.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /*
-        explanation on log, used to log database creation during development
-        delete this when launching application
-        http://developer.android.com/reference/android/util/Log.html#w(java.lang.String, java.lang.String)
-        Log.w(SQLiteCreator.class.getName(),
-                "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data");
-        */
-
         db.execSQL(DROP_TABLE);
         onCreate(db);
     }
