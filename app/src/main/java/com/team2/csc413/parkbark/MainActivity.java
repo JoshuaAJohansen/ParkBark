@@ -97,6 +97,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+                // example for testing location when location can not be retrieved from LocationManager
+                //Location location = new Location("SF Parking location example");
+                //location.setLatitude(37.792275);
+                //location.setLongitude(-122.397089);
+
                 if (location == null) {
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                     alertDialog.setTitle("Location not found");
@@ -114,7 +119,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 } else {
                     String streetNames = "";
 
-                    SFParking.service.getParkingList(location);
+                    SFParking.service.retrieveParkingList(location);
                     List park_li = SFParking.service.getParkingList();
 
                     if (SFParking.service.getStatus().equals("SUCCESS")) {
@@ -124,13 +129,21 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                             streetNames += place.getName() + "\n";
 
-                            SFParking.OPHRS ophrs = (SFParking.OPHRS) place.getOPHRS();
+                            // example of retrieving ophrs from SFParking class
+                            /*
+                            List ophrs = place.getOPHRS();
 
                             if (ophrs != null) {
-                                streetNames += "from: " + ophrs.getFrom() + "\nto: " + ophrs.getTo()
-                                        + "\nbeggining: " + ophrs.getBeg() + "\nend: " + ophrs.getEnd() + "\n";
 
+                                for (int j=0; j < ophrs.size(); j++) {
+
+                                    SFParking.OPHRS ops = (SFParking.OPHRS)ophrs.get(j);
+
+                                    streetNames += "from: " + ops.getFrom() + "\nto: " + ops.getTo()
+                                            + "\nbeggining: " + ops.getBeg() + "\nend: " + ops.getEnd() + "\n";
+                                }
                             }
+                            */
                         }
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Available Parking Places");

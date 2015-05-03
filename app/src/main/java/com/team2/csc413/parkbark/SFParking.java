@@ -1,5 +1,6 @@
 package com.team2.csc413.parkbark;
 
+import com.google.android.gms.location.*;
 import android.location.Location;
 import android.util.JsonReader;
 import android.util.Log;
@@ -16,22 +17,38 @@ import java.net.MalformedURLException;
  */
 public class SFParking {
 
-
+    // creates a unique instance of SFParking
     public static SFParking service = new SFParking();
+
+    // tag is used for debugging with Log.d(TAG, message)
     private static final String TAG = SFParking.class.getSimpleName();
 
-    private List<ParkingPlace> parkingList;
+    // data to be stored from Json request
+    private String status,
+            message,
+            inter,
+            tel,
+            avail_update_t,
+            avail_request_t;
     private int requestID,
         udf1,
         num_records;
-    private String status,
-           message,
-           avail_update_t,
-           avail_request_t;
+    private List<ParkingPlace> parkingList;
 
+    // instantiating default values
     private SFParking() {
-
+        status = null;
+        message=null;
+        inter=null;
+        tel=null;
+        avail_request_t=null;
+        avail_update_t=null;
+        requestID=-1;
+        udf1=-1;
+        num_records=0;
+        parkingList=null;
     }
+
 
     public String getStatus() {
         return status;
@@ -57,13 +74,15 @@ public class SFParking {
         return message;
     }
 
+    public String getInter() { return inter; }
+
+    public String getTel() { return tel; }
+
     public String getAvail_update_t() {
         return avail_update_t;
     }
 
-    public String getAvail_request_t() {
-        return avail_request_t;
-    }
+    public String getAvail_request_t() { return avail_request_t; }
 
     /**
      * returns a list of parking locations
@@ -71,7 +90,7 @@ public class SFParking {
      * @param loc
      * @throws java.io.IOException
      */
-    public void getParkingList(Location loc) {
+    public void retrieveParkingList(Location loc) {
         URL serviceURL = createURL(loc);
 
         try {
@@ -80,6 +99,7 @@ public class SFParking {
         catch(IOException io_e) {
             Log.d(TAG, io_e.toString());
         }
+
     }
 
     /**
@@ -91,7 +111,9 @@ public class SFParking {
      */
     private List readStreamSFP(InputStream in) throws IOException {
 
-        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+        InputStreamReader isr = new InputStreamReader(in, "UTF-8");
+
+        JsonReader reader = new JsonReader(isr);
 
         try {
             return readParkingList(reader);
@@ -103,7 +125,6 @@ public class SFParking {
 
     /**
      * creates a URL object from a location.
-     * URL should be used to getParkingList information from SF Park
      *
      * @param loc
      * @return java.net.URL
@@ -119,13 +140,14 @@ public class SFParking {
                 + "&response=json";
 
         try {
-            return new URL(url_string);
+            URL url = new URL(url_string);
+            return url;
         }
         catch (MalformedURLException url_e) {
             Log.d(TAG, url_e.toString());
-        }
 
-        return null;
+            return null;
+        }
     }
 
     /**
@@ -144,9 +166,9 @@ public class SFParking {
 
         if (name.equals("STATUS")) {
 
-            status = name;
+            status = reader.nextString();
 
-            if (reader.nextString().equals("SUCCESS")) {
+            if (status.equals("SUCCESS")) {
 
                 while(reader.hasNext()) {
                     name = reader.nextName();
@@ -162,6 +184,12 @@ public class SFParking {
 
                     } else if (name.equals("MESSAGE")) {
                         message = reader.nextString();
+
+                    } else if (name.equals("INTER")) {
+                        inter = reader.nextString();
+
+                    } else if (name.equals("TEL")) {
+                        tel = reader.nextString();
 
                     } else if (name.equals("AVAILABILITY_UPDATED_TIMESTAMP")) {
                         avail_update_t = reader.nextString();
@@ -183,7 +211,7 @@ public class SFParking {
 
                 }
 
-            } else if (name.equals("ERROR")) {
+            } else if (status.equals("ERROR")) {
                 status = name;
                 Log.d(TAG, reader.nextString());
             } else {
@@ -280,35 +308,49 @@ public class SFParking {
                end = null,
                name;
 
-        reader.beginArray();
+        reader.beginObject();
 
-        while (reader.hasNext()) {
-            reader.beginObject();
+        name = reader.nextName();
+        if (name.equals("OPS")) {
+
+            reader.beginArray();
 
             while (reader.hasNext()) {
-                name = reader.nextName();
 
-                if (name.equals("FROM")) {
-                    from = reader.nextString();
+                reader.beginObject();
 
-                } else if (name.equals("TO")) {
-                    to = reader.nextString();
+                while (reader.hasNext()) {
 
-                } else if (name.equals("BEG")) {
-                    beg = reader.nextString();
+                    name = reader.nextName();
 
-                } else if (name.equals("END")) {
-                    end = reader.nextString();
+                    if (name.equals("FROM")) {
+                        from = reader.nextString();
 
-                } else {
-                    reader.skipValue();
+                    } else if (name.equals("TO")) {
+                        to = reader.nextString();
+
+                    } else if (name.equals("BEG")) {
+                        beg = reader.nextString();
+
+                    } else if (name.equals("END")) {
+                        end = reader.nextString();
+
+                    } else {
+                        reader.skipValue();
+                    }
                 }
-            }
-            reader.endObject();
 
-            ophrsList.add(new OPHRS(from, to, beg, end));
+                reader.endObject();
+
+                ophrsList.add(new OPHRS(from, to, beg, end));
+            }
+            reader.endArray();
+
+        } else {
+            Log.d(TAG, "JSON retrieval error: Rate does not contain RS");
         }
-        reader.endArray();
+
+        reader.endObject();
 
         return ophrsList;
     }
@@ -331,43 +373,53 @@ public class SFParking {
                rr = null,
                name;
 
-        reader.beginArray();
+        reader.beginObject();
 
-        //parse rate and add it to the list
-        while (reader.hasNext()) {
-            reader.beginObject();
+        name = reader.nextName();
+
+        if (name.equals("RS")) {
+
+            reader.beginArray();
 
             while (reader.hasNext()) {
-                name = reader.nextName();
+                reader.beginObject();
 
-                if (name.equals("BEG")) {
-                    beg = reader.nextString();
+                while (reader.hasNext()) {
+                    name = reader.nextName();
 
-                } else if (name.equals("END")) {
-                    end = reader.nextString();
+                    if (name.equals("BEG")) {
+                        beg = reader.nextString();
 
-                } else if (name.equals("RATE")) {
-                    rate = reader.nextString();
+                    } else if (name.equals("END")) {
+                        end = reader.nextString();
 
-                } else if (name.equals("DESC")) {
-                    desc = reader.nextString();
+                    } else if (name.equals("RATE")) {
+                        rate = reader.nextString();
 
-                } else if (name.equals("RQ")) {
-                    rq = reader.nextString();
+                    } else if (name.equals("DESC")) {
+                        desc = reader.nextString();
 
-                } else if (name.equals("RR")) {
-                    rr = reader.nextString();
+                    } else if (name.equals("RQ")) {
+                        rq = reader.nextString();
 
-                } else {
-                    reader.skipValue();
+                    } else if (name.equals("RR")) {
+                        rr = reader.nextString();
+
+                    } else {
+                        reader.skipValue();
+                    }
                 }
+
+                reader.endObject();
+
+                rates.add(new Rate(beg, end, rate, desc, rq, rr));
             }
+            reader.endArray();
 
-            reader.endObject();
-
-            rates.add(new Rate(beg, end, rate, desc, rq, rr));
+        } else {
+            Log.d(TAG, "JSON retrieval error: Rate does not contain RS");
         }
-        reader.endArray();
+        reader.endObject();
 
         return rates;
     }
