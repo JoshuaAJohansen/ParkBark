@@ -53,6 +53,11 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         this.context = context;
     }
 
+    /**
+     * Creates database and the table using the string, DATABASE_CREATE
+     *
+     * @param db         The database
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_CREATE);
