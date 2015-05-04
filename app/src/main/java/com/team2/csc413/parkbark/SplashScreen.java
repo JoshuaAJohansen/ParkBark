@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-//TODO Change the picture from res folder
 public class SplashScreen extends Activity {
 
 

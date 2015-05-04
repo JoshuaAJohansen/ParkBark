@@ -19,6 +19,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import android.media.MediaPlayer;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -38,6 +40,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+
+    MediaPlayer player;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -76,6 +80,23 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 setParkMarker();
             }
 
+        });
+
+
+        // Adding a media player and sound to media player
+        // On the start button click even the sound will start
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        // ImageView imageview=(ImageView)findViewById(R.id.imageview);
+
+        Park_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                player=MediaPlayer.create(MainActivity.this,R.raw.barksound);
+
+                player.start();
+
+            }
         });
 
     }
@@ -236,4 +257,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             ParkMarker = null;
         }
     }
+
 }
+
+
