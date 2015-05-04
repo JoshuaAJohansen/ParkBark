@@ -79,7 +79,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             public void onClick(View v){
                 setParkMarker();
 
-
             }
 
         });
@@ -233,7 +232,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            player=MediaPlayer.create(MainActivity.this,R.raw.barksound);
+            player=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
             player.start();
 
