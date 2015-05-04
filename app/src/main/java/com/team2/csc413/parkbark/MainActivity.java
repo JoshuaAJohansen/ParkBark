@@ -78,25 +78,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             @Override
             public void onClick(View v){
                 setParkMarker();
-            }
 
-        });
-
-
-        // Adding a media player and sound to media player
-        // On the start button click even the sound will start
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // ImageView imageview=(ImageView)findViewById(R.id.imageview);
-
-        Park_Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                // Adding a media player and sound to media player
+                // On the start button click even the sound will start
                 player=MediaPlayer.create(MainActivity.this,R.raw.barksound);
 
                 player.start();
-
             }
+
         });
 
     }
