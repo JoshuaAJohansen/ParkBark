@@ -30,6 +30,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team2.csc413.parkbark.SplashScreen" />
         </activity>
+        <activity
+            android:name="com.team2.csc413.parkbark.Settings"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:label="Settings"
+            android:parentActivityName="com.team2.csc413.parkbark.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.team2.csc413.parkbark.MainActivity" />
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
