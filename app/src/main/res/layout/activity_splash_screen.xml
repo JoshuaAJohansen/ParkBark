@@ -8,4 +8,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/dogbark"/>
+    <!-- Need to convert background pics before insert into multiple folders,
+        then just change the android:background -->
 </LinearLayout>

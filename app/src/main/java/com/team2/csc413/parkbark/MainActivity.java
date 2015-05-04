@@ -1,6 +1,9 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -10,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +33,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-//TODO Include Park button that store park location through SQLite
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
+//TODO Include Park button that store park location through SQLite
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -38,6 +44,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+
+    SQLiteDatabaseAdapter dbAdapter;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -49,10 +57,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      */
     private CharSequence mTitle;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        dbAdapter = new SQLiteDatabaseAdapter(this);
+
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
 
@@ -70,10 +83,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         //Park Button On-Click listener
-        Park_Button.setOnClickListener(new View.OnClickListener(){
+        Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                setParkMarker();
+            public void onClick(View v) {
+                setParkMarker(v);
+
             }
 
         });
@@ -82,6 +96,18 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+
+        switch(position){
+            case 0:
+                break;
+            case 1:
+                showHistoryParking();
+                break;
+            case 2:
+                break;
+        }
+
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -133,6 +159,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, Settings.class));
             return true;
         }
 
@@ -180,7 +207,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 
-    private void setMapUI(){
+    private void setMapUI() {
         mMap.setMyLocationEnabled(true);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMyLocationButtonEnabled(true);
@@ -189,8 +216,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Criteria criteria = new Criteria();
 
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        if (location != null)
-        {
+        if (location != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
@@ -205,14 +231,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    private void setParkMarker(){
-        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    private void setParkMarker(View v) {
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(location == null){
+        if (location == null) {
             Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
-        }else if(ParkMarker == null) {
+        } else if (ParkMarker == null) {
 
-            LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
+            LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
             ParkMarker = mMap.addMarker(new MarkerOptions()
                     .position(PARKED)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
@@ -225,7 +251,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-        }else{
+            addParkingSpot(v);
+
+
+        } else {
 
             mMap.clear();
 
@@ -236,4 +265,59 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             ParkMarker = null;
         }
     }
+
+    public void addParkingSpot(View view) {
+
+        Log.d("SQLTag", "Enter SQL function");
+
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
+
+        String date = dateFormat.format(c.getTime());
+        String time = timeFormat.format(c.getTime());
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        String duration = "duration";
+        String restriction = "restriction";
+
+        dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
+
+    }
+
+    public void showHistoryParking(){
+        String getUID, getDATE, getTIME, getDURATION, getRESTRICTION;
+        double getLAT, getLNG;
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        mMap.clear();
+
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if(cursor.moveToFirst()){
+            do{
+                getUID = cursor.getString(0);
+                getDATE = cursor.getString(1);
+                getTIME = cursor.getString(2);
+                getLAT = cursor.getFloat(3);
+                getLNG = cursor.getFloat(4);
+                getDURATION = cursor.getString(5);
+                getRESTRICTION = cursor.getString(6);
+
+                LatLng marker = new LatLng(getLAT, getLNG);
+                Marker historyMarker = mMap.addMarker(new MarkerOptions()
+                                                            .position(marker));
+
+            }while(cursor.moveToNext());
+        }
+
+    }
+
 }
