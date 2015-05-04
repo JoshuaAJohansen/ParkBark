@@ -3,11 +3,11 @@ package com.team2.csc413.parkbark;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 //used
 import android.util.Log;
+import com.google.android.gms.maps.model.LatLng;
 
 //TODO Create method for reading from database
 //TODO Create method for deleting the database (from setting)
@@ -85,27 +85,27 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
      * Inserts row with data of parking spot to the database. Information
      * is generated through location information.
      *
-     * @param DATE          date when the car was parked day/month/year.
-     * @param TIME          time car was parked using military time
+     * @param date          date when the car was parked day/month/year.
+     * @param time          time car was parked using military time
      * @param LATITUDE      gps coordinates for latitude where car was parked
      * @param LONGITUDE     gps coordinates for longitude where car was parked
-     * @param DURATION      duration the car was intended to be parked
-     * @param RESTRICTION   parking restrictions for current location
+     * @param duration      duration the car was intended to be parked
+     * @param restriction   parking restrictions for current location
      */
-    public void insertParkingSpot(String DATE, String TIME, double LATITUDE, double LONGITUDE,
-                                  String DURATION, String RESTRICTION)
+    public void insertParkingSpot(String date, String time, double LATITUDE, double LONGITUDE,
+                                  String duration, String restriction)
     {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d("SQLTag", "insertParkingSpot: getWritableDatabase()");
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DATE, DATE);
-        contentValues.put(TIME, TIME);
+        contentValues.put(DATE, date);
+        contentValues.put(TIME, time);
         contentValues.put(LAT, LATITUDE);
         contentValues.put(LNG, LONGITUDE);
-        contentValues.put(DURATION, DURATION);
-        contentValues.put(RESTRICTION, RESTRICTION);
+        contentValues.put(DURATION, duration);
+        contentValues.put(RESTRICTION, restriction);
 
         db.insert(TABLE_NAME, null, contentValues);
 
@@ -136,5 +136,7 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
 
     }
+
+
 
 }
