@@ -253,8 +253,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
 
         } else {
-
-            mMap.clear();
+            ParkMarker.remove();
+            //mMap.clear();
 
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
@@ -295,7 +295,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        mMap.clear();
 
         Cursor cursor = dbAdapter.getAllParkingSpot();
 
