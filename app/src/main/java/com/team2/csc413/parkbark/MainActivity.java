@@ -2,11 +2,14 @@ package com.team2.csc413.parkbark;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -98,9 +102,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         // Park Button On-Click listener
         // needs modification for current class
-        Park_Button.setOnClickListener(new View.OnClickListener(){
+        Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //setParkMarker();
 
                 LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -173,7 +179,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                         alertDialog.setMessage(streetNames);
                         alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
 
-                            public void onClick(DialogInterface dialog, int which) {}
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
                         });
                         alertDialog.show();
 
@@ -182,6 +189,43 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     }
 
                 }
+
+            }
+        });
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng arg1) {
+                //Toast.makeText(getApplicationContext(), "This is a Toast......", Toast.LENGTH_LONG).show();
+                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                final Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                SFParking.service.retrieveParkingList(location);
+                List park_li2 = SFParking.service.getParkingList();
+                String[] parkingPlaces = new String[SFParking.service.getNum_records()];
+                final LatLng[] parkingLoc = new LatLng[SFParking.service.getNum_records()];
+                for (int x = 0; x < SFParking.service.getNum_records(); x++) {
+                    SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li2.get(x);
+                    parkingPlaces[x] = place.getName();
+                    SFParking.LocationSFP locsfp = place.getLoc();
+                    parkingLoc[x] = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                }
+
+                AlertDialog.Builder MyListAlertDialog = new AlertDialog.Builder(MainActivity.this);
+                MyListAlertDialog.setTitle("Available Parking Places");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Available Parking Places");
+                builder.setItems(parkingPlaces, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
+                        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
+                        intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                        startActivity(intent);
+                    }
+                });
+                builder.show();
+
 
             }
         });
