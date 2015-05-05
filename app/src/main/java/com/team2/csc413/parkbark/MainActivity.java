@@ -311,11 +311,56 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                 LatLng marker = new LatLng(getLAT, getLNG);
                 Marker historyMarker = mMap.addMarker(new MarkerOptions()
-                                                            .position(marker));
+                        .position(marker));
 
             }while(cursor.moveToNext());
         }
 
+    }
+
+
+    /**
+     * Function selects from the database the Latitude and Longitude
+     * of last parked location
+     *
+     * @return LatLng object of the most recent parked location in database
+     */
+    public LatLng getLatLng() {
+        LatLng myLatLng;
+        double myLNG, myLAT;
+
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if (cursor.moveToLast()) {
+            myLAT = cursor.getFloat(3);
+            myLNG = cursor.getFloat(4);
+            myLatLng = new LatLng(myLAT, myLNG);
+            return myLatLng;
+        }
+        myLatLng = new LatLng(-1, -1);
+        return myLatLng;
+    }
+
+    public double getLAT() {
+        double myLAT;
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if (cursor.moveToLast()) {
+            myLAT = cursor.getDouble(3);
+            return myLAT;
+        }
+        else return -1.0;
+    }
+
+    public double getLNG() {
+        double myLNG;
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if (cursor.moveToLast()) {
+
+            myLNG = cursor.getDouble(4);
+            return myLNG;
+        } else return -1.0;
     }
 
 }
