@@ -19,8 +19,9 @@
             android:layout_width="109dp"
             android:layout_height="wrap_content"
             android:text="New ToggleButton"
-            android:id="@+id/toggleButton1"
+            android:id="@+id/toggleAlarm"
             android:layout_gravity="right"
+            android:onClick="onToggleClicked"
             android:layout_marginRight="15dp" />
 
 
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="Clear Parking History"
             android:id="@+id/clearbutton"
-            android:layout_alignTop="@+id/toggleButton1"
+            android:layout_alignTop="@+id/toggleAlarm"
             android:layout_gravity="center_horizontal" />
 
     </LinearLayout>

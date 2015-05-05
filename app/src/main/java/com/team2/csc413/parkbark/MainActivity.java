@@ -2,6 +2,7 @@ package com.team2.csc413.parkbark;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
@@ -44,6 +45,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+    boolean alarmOn;
+    public static final String SETTINGS = "AppPref";
 
     SQLiteDatabaseAdapter dbAdapter;
 
@@ -63,15 +66,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         dbAdapter = new SQLiteDatabaseAdapter(this);
-
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+
+
 
         //initialize map fragment
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -91,6 +94,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             }
 
         });
+
+        //load preferences
+        SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
+        alarmOn = loadSettings.getBoolean("ALARM", true);
 
     }
 
@@ -235,8 +242,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private void setParkMarker(View v) {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        Log.d("alarm_status", String.valueOf(alarmOn));
+
         if (location == null) {
-            Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
+
         } else if (ParkMarker == null) {
 
             LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
