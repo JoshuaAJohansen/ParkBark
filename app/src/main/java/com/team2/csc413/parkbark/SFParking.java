@@ -136,7 +136,7 @@ public class SFParking {
         lon = loc.getLongitude();
 
         url_string = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat="+lat+"&long="+lon
-                + "&response=json";
+                + "&radius=50&uom=mile&response=json";
 
         try {
             URL url = new URL(url_string);
@@ -312,11 +312,21 @@ public class SFParking {
         name = reader.nextName();
         if (name.equals("OPS")) {
 
-            reader.beginArray();
+            android.util.JsonToken test = reader.peek();
+            boolean check1 = test.name().equals("BEGIN_ARRAY");
+
+            if (check1) {
+                reader.beginArray();
+            }
 
             while (reader.hasNext()) {
 
-                reader.beginObject();
+                test = reader.peek();
+                boolean check2 = test.name().equals("BEGIN_OBJECT");
+
+                if (check2) {
+                    reader.beginObject();
+                }
 
                 while (reader.hasNext()) {
 
@@ -339,11 +349,16 @@ public class SFParking {
                     }
                 }
 
-                reader.endObject();
+                if (check2) {
+                    reader.endObject();
+                }
 
                 ophrsList.add(new OPHRS(from, to, beg, end));
             }
-            reader.endArray();
+
+            if (check1) {
+                reader.endArray();
+            }
 
         } else {
             Log.d(TAG, "JSON retrieval error: Rate does not contain RS");
@@ -378,10 +393,21 @@ public class SFParking {
 
         if (name.equals("RS")) {
 
-            reader.beginArray();
+            android.util.JsonToken test = reader.peek();
+            boolean check1 = test.name().equals("BEGIN_ARRAY");
+
+            if (check1) {
+                reader.beginArray();
+            }
 
             while (reader.hasNext()) {
-                reader.beginObject();
+
+                test = reader.peek();
+                boolean check2 = test.name().equals("BEGIN_OBJECT");
+
+                if (check2) {
+                    reader.beginObject();
+                }
 
                 while (reader.hasNext()) {
                     name = reader.nextName();
@@ -613,5 +639,7 @@ public class SFParking {
             return numloc;
         }
     }
+
+
 
 }

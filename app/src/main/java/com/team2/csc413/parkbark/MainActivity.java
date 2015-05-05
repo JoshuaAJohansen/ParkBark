@@ -105,13 +105,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                // example for testing location when location can not be retrieved from LocationManager
-                //Location location = new Location("SF Parking location example");
-                //location.setLatitude(37.792275);
-                //location.setLongitude(-122.397089);
-
-
-
                 if (location == null) {
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                     alertDialog.setTitle("Location not found");
@@ -147,26 +140,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                                 LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
                                 addLines(loc1, loc2);
 
+
                             } else {
                                 LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
                                 addMarker(place.getName(), loc);
                             }
 
-                            // example of retrieving ophrs from SFParking class
-                            /*
-                            List ophrs = place.getOPHRS();
 
-                            if (ophrs != null) {
-
-                                for (int j=0; j < ophrs.size(); j++) {
-
-                                    SFParking.OPHRS ops = (SFParking.OPHRS)ophrs.get(j);
-
-                                    streetNames += "from: " + ops.getFrom() + "\nto: " + ops.getTo()
-                                            + "\nbeggining: " + ops.getBeg() + "\nend: " + ops.getEnd() + "\n";
-                                }
-                            }
-                            */
                         }
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Available Parking Places");
