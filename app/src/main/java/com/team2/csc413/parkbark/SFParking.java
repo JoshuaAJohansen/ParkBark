@@ -1,6 +1,5 @@
 package com.team2.csc413.parkbark;
 
-import com.google.android.gms.location.*;
 import android.location.Location;
 import android.util.JsonReader;
 import android.util.Log;
@@ -13,7 +12,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
- * Created by Michael and Aaron on 5/02/15.
+ * Created by Michael and Aaron on 5/04/15.
  */
 public class SFParking {
 
@@ -238,12 +237,12 @@ public class SFParking {
 
         String type = null,
                name = null,
-               desc = null,
-               loc = null;
+               desc = null;
         int bfid = -1,
             occ = -1,
             oper = -1,
             pts = -1;
+        LocationSFP loc = null;
         List<OPHRS> ophrs = null;
         List<Rate> rates = null;
 
@@ -274,7 +273,7 @@ public class SFParking {
                 pts = reader.nextInt();
 
             } else if (reader_s.equals("LOC")) {
-                loc = reader.nextString();
+                loc = new LocationSFP( reader.nextString() );
 
             } else if (reader_s.equals("OPHRS")) {
                 ophrs = readOPHRS(reader);
@@ -430,17 +429,17 @@ public class SFParking {
     public class ParkingPlace {
         private String type,
                        name,
-                       desc,
-                       loc;
+                       desc;
         private int bfid,
                     occ,
                     oper,
                     pts;
+        private LocationSFP loc;
         private List<OPHRS> ophrs;
         private List<Rate> rates;
 
         private ParkingPlace(String type, String name, String desc, int bfid, int occ,
-                                  int oper, int pts, List<OPHRS> ophrs, List<Rate> rates, String loc ) {
+                                  int oper, int pts, List<OPHRS> ophrs, List<Rate> rates, LocationSFP loc ) {
             this.type = type;
             this.name = name;
             this.desc = desc;
@@ -466,7 +465,7 @@ public class SFParking {
             return desc;
         }
 
-        public String getLoc() {
+        public LocationSFP getLoc() {
             return loc;
         }
 
@@ -531,7 +530,7 @@ public class SFParking {
     /*
      * rates
      */
-    protected class Rate {
+    public class Rate {
         private String beg,
                        end,
                        rate,
@@ -572,6 +571,47 @@ public class SFParking {
             return rateRestriction;
         }
 
+    }
+
+    public class LocationSFP {
+        private int numloc;
+
+        private double lat1, lng1,
+               lat2, lng2;
+
+        protected LocationSFP(String location_s) {
+            String[] latlng = location_s.split(",");
+
+            if(latlng.length > 2) {
+                lng1 = Double.parseDouble(latlng[0]);
+                lat1 = Double.parseDouble(latlng[1]);
+                lng2 = Double.parseDouble(latlng[2]);
+                lat2 = Double.parseDouble(latlng[3]);
+                numloc = 2;
+            } else {
+                lng1 = Double.parseDouble(latlng[0]);
+                lat1 = Double.parseDouble(latlng[1]);
+                lng2 = -1;
+                lat2 = -1;
+                numloc = 1;
+            }
+        }
+
+        public double getLat1() {
+            return lat1;
+        }
+        public double getLng1() {
+            return lng1;
+        }
+        public double getLat2() {
+            return lat2;
+        }
+        public double getLng2() {
+            return lng2;
+        }
+        public int getNumLocations() {
+            return numloc;
+        }
     }
 
 }

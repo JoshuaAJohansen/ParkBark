@@ -3,6 +3,7 @@ package com.team2.csc413.parkbark;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.*;
 
@@ -88,19 +90,27 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        /*
+        LatLng loc1 = new LatLng(37.7231644, -122.47552105);
+        LatLng loc2 = new LatLng(37.7231644, -123.47552105);
+        addLines(loc1, loc2);
+        */
+
         // Park Button On-Click listener
         // needs modification for current class
         Park_Button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
 
-                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                //LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                //Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                 // example for testing location when location can not be retrieved from LocationManager
-                //Location location = new Location("SF Parking location example");
-                //location.setLatitude(37.792275);
-                //location.setLongitude(-122.397089);
+                Location location = new Location("SF Parking location example");
+                location.setLatitude(37.792275);
+                location.setLongitude(-122.397089);
+
+
 
                 if (location == null) {
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -120,6 +130,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     String streetNames = "";
 
                     SFParking.service.retrieveParkingList(location);
+
                     List park_li = SFParking.service.getParkingList();
 
                     if (SFParking.service.getStatus().equals("SUCCESS")) {
@@ -128,6 +139,18 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
 
                             streetNames += place.getName() + "\n";
+
+                            SFParking.LocationSFP locsfp = place.getLoc();
+
+                            if (locsfp.getNumLocations() > 1) {
+                                LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                                LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
+                                addLines(loc1, loc2);
+
+                            } else {
+                                LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                                addMarker(place.getName(), loc);
+                            }
 
                             // example of retrieving ophrs from SFParking class
                             /*
@@ -167,6 +190,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -175,6 +199,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     public void onSectionAttached(int number) {
+
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
@@ -189,6 +214,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     public void restoreActionBar() {
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
@@ -310,6 +336,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
+
+
         }else{
 
             mMap.clear();
@@ -320,5 +348,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             ParkMarker = null;
         }
+    }
+
+    private void addLines(LatLng loc1, LatLng loc2) {
+        mMap
+                .addPolyline((new PolylineOptions())
+                        .add(loc1, loc2).width(5).color(Color.BLUE)
+                        .geodesic(true));
+        // move camera to zoom on map
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LOWER_MANHATTAN, 13));
+    }
+
+    public void addMarker(String name, LatLng loc) {
+        mMap.addMarker(new MarkerOptions()
+                .position(loc)
+                .title(name));
     }
 }
