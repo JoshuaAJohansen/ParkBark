@@ -25,6 +25,14 @@
             android:layout_gravity="right|bottom"
             android:background="@drawable/park_btn"
             android:clickable="true" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="51dp"
+            android:id="@+id/TimeToWalk_Btn"
+            android:layout_gravity="left|bottom"
+            android:background="@drawable/timetowalk_btn"
+            android:clickable="true"/>
     </FrameLayout>
 
 

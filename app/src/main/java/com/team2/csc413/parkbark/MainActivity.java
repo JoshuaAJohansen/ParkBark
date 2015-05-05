@@ -1,24 +1,23 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -43,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+    ImageButton TimeToWalk_Button = null;
 
     SQLiteDatabaseAdapter dbAdapter;
 
@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+        TimeToWalk_Button = (ImageButton) findViewById(R.id.TimeToWalk_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -90,6 +91,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             }
 
         });
+
+        //TimeToWalk_Button.setOnClickListener();
 
     }
 
@@ -359,6 +362,49 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             myLNG = cursor.getDouble(4);
             return myLNG;
         } else return -1.0;
+    }
+
+    public void setWalkMarker(View v){
+        if(ParkMarker == null){
+            TimeToWalk_Button.setEnabled(false);
+        } else {
+
+        }
+    }
+
+    public void timeToWalk (){
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        int Radius = 6371;
+
+        double lat1 = location.getLatitude();
+        double lng1 = location.getLongitude();
+
+        double lat2 = getLAT();
+        double lng2 = getLNG();
+
+        double latDistance = Math.toRadians(lat2 -lat1);
+        double lngDistance = Math.toRadians(lng2 - lng1);
+
+        double a = Math.sin(latDistance / 2)
+                * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lngDistance / 2)
+                * Math.sin(lngDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double distance = Radius * c * 1000;
+
+        double seconds = distance / 1.4;
+
+        double minutes = seconds / 60;
+
+        int finalTime = (int) Math.ceil(minutes / 100.0);
+
+        Toast.makeText(MainActivity.this, "Time to Walk to Car " + finalTime, Toast.LENGTH_SHORT).show();
     }
 
 }
