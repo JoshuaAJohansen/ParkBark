@@ -102,13 +102,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             @Override
             public void onClick(View v) {
 
-                //LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                //Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                 // example for testing location when location can not be retrieved from LocationManager
-                Location location = new Location("SF Parking location example");
-                location.setLatitude(37.792275);
-                location.setLongitude(-122.397089);
+                //Location location = new Location("SF Parking location example");
+                //location.setLatitude(37.792275);
+                //location.setLongitude(-122.397089);
 
 
 
