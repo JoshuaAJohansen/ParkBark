@@ -348,8 +348,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if (cursor.moveToLast()) {
             myLAT = cursor.getDouble(3);
             return myLAT;
-        }
-        else return -1.0;
+        } else return (-1.0);
     }
 
     public double getLNG() {
