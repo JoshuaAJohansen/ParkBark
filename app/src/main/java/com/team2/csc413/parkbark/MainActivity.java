@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,11 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import android.media.MediaPlayer;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -277,6 +275,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Park_Button.setBackgroundResource(R.drawable.park_btn);
 
             ParkMarker = null;
+
+            TimeToWalk_Button.setEnabled(false);
         }
     }
 
@@ -410,7 +410,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         int finalTime = (int) Math.ceil(minutes / 100.0);
 
-        Toast.makeText(MainActivity.this, "Time to Walk to Car " + finalTime, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "Time to Walk to Car is " + finalTime + " minutes", Toast.LENGTH_SHORT).show();
     }
 
 }
