@@ -1,24 +1,23 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -43,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+    ImageButton TimeToWalk_Button = null;
 
     SQLiteDatabaseAdapter dbAdapter;
 
@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+        TimeToWalk_Button = (ImageButton) findViewById(R.id.TimeToWalk_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -81,6 +82,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        TimeToWalk_Button.setEnabled(false);
+
         //Park Button On-Click listener
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +93,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             }
 
         });
+
 
     }
 
@@ -251,10 +255,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             addParkingSpot(v);
 
+            TimeToWalk_Button.setEnabled(true);
 
         } else {
-
-            mMap.clear();
+            ParkMarker.remove();
+            //mMap.clear();
 
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
@@ -295,7 +300,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        mMap.clear();
 
         Cursor cursor = dbAdapter.getAllParkingSpot();
 
@@ -311,11 +315,91 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                 LatLng marker = new LatLng(getLAT, getLNG);
                 Marker historyMarker = mMap.addMarker(new MarkerOptions()
-                                                            .position(marker));
+                        .position(marker));
 
             }while(cursor.moveToNext());
         }
 
+    }
+
+
+    /**
+     * Function selects from the database the Latitude and Longitude
+     * of last parked location
+     *
+     * @return LatLng object of the most recent parked location in database
+     */
+    public LatLng getLatLng() {
+        LatLng myLatLng;
+        double myLNG, myLAT;
+
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if (cursor.moveToLast()) {
+            myLAT = cursor.getFloat(3);
+            myLNG = cursor.getFloat(4);
+            myLatLng = new LatLng(myLAT, myLNG);
+            return myLatLng;
+        }
+        myLatLng = new LatLng(-1, -1);
+        return myLatLng;
+    }
+
+    public double getLAT() {
+        double myLAT;
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if (cursor.moveToLast()) {
+            myLAT = cursor.getDouble(3);
+            return myLAT;
+        } else return (-1.0);
+    }
+
+    public double getLNG() {
+        double myLNG;
+        Cursor cursor = dbAdapter.getAllParkingSpot();
+
+        if (cursor.moveToLast()) {
+
+            myLNG = cursor.getDouble(4);
+            return myLNG;
+        } else return -1.0;
+    }
+
+    //function that calculates and does a toast for the time to walk back to car.
+    public void timeToWalk (View v){
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        int Radius = 6371;
+
+        double lat1 = location.getLatitude();
+        double lng1 = location.getLongitude();
+
+        double lat2 = getLAT();
+        double lng2 = getLNG();
+
+        double latDistance = Math.toRadians(lat2 -lat1);
+        double lngDistance = Math.toRadians(lng2 - lng1);
+
+        double a = Math.sin(latDistance / 2)
+                * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1))
+                * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lngDistance / 2)
+                * Math.sin(lngDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double distance = Radius * c * 1000;
+
+        double seconds = distance / 1.4;
+
+        double minutes = seconds / 60;
+
+        int finalTime = (int) Math.ceil(minutes / 100.0);
+
+        Toast.makeText(MainActivity.this, "Time to Walk to Car " + finalTime, Toast.LENGTH_SHORT).show();
     }
 
 }
