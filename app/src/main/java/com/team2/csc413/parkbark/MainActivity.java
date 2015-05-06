@@ -372,6 +372,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
+    //function that calculates and does a toast for the time to walk back to car.
     public void timeToWalk (){
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
