@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -23,8 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -50,6 +53,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+    int setNotification = 0;
 
 
     /**
@@ -94,21 +98,122 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        /*
+        LatLng loc1 = new LatLng(37.7231644, -122.47552105);
+        LatLng loc2 = new LatLng(37.7231644, -123.47552105);
+        addLines(loc1, loc2);
+        */
 
         // Park Button On-Click listener
         // needs modification for current class
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //setParkMarker();
+
+                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                // example for testing location when location can not be retrieved from LocationManager
+                //Location location = new Location("SF Parking location example");
+                //location.setLatitude(37.792275);
+                //location.setLongitude(-122.397089);
+
+                if (setNotification == 0){
+                    setNotification = 1;
+                    showTimerDialog();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Notification already set", Toast.LENGTH_SHORT).show();
+                }
+
+
+                /*if (location == null) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("Location not found");
+                    alertDialog.setMessage("we regret to inform you, your last known location could not be found");
+                    alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            // closed
+                        }
+                    });
+                    // Showing Alert Message
+                    alertDialog.show();
+
+
+                } else {
+                    String streetNames = "";
+
+                    SFParking.service.retrieveParkingList(location);
+
+                    List park_li = SFParking.service.getParkingList();
+
+                    if (SFParking.service.getStatus().equals("SUCCESS")) {
+
+                        for (int i = 0; i < SFParking.service.getNum_records(); i++) {
+                            SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
+
+                            streetNames += place.getName() + "\n";
+
+                            SFParking.LocationSFP locsfp = place.getLoc();
+
+                            if (locsfp.getNumLocations() > 1) {
+                                LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                                LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
+                                addLines(loc1, loc2);
+
+                            } else {
+                                LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                                addMarker(place.getName(), loc);
+                            }
+
+                            // example of retrieving ophrs from SFParking class
+                            /*
+                            List ophrs = place.getOPHRS();
+
+                            if (ophrs != null) {
+
+                                for (int j=0; j < ophrs.size(); j++) {
+
+                                    SFParking.OPHRS ops = (SFParking.OPHRS)ophrs.get(j);
+
+                                    streetNames += "from: " + ops.getFrom() + "\nto: " + ops.getTo()
+                                            + "\nbeggining: " + ops.getBeg() + "\nend: " + ops.getEnd() + "\n";
+                                }
+                            }
+
+                        }
+                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        alertDialog.setTitle("Available Parking Places");
+                        alertDialog.setMessage(streetNames);
+                        alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        alertDialog.show();
+
+                    } else {
+                        Log.d(null, "Application can not connect to SF Parking service");
+                    }
+
+                }*/
             }
         });
 
+        /**
+         * Tapping on the screen longer will show a list where you can park
+         */
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng arg1) {
                 //Toast.makeText(getApplicationContext(), "This is a Toast......", Toast.LENGTH_LONG).show();
-                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                final Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                //LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                //final Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                final Location location = new Location("");
+                location.setLatitude(arg1.latitude);
+                location.setLongitude(arg1.longitude);
                 SFParking.service.retrieveParkingList(location);
                 List park_li2 = SFParking.service.getParkingList();
                 String[] parkingPlaces = new String[SFParking.service.getNum_records()];
@@ -130,11 +235,46 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     public void onClick(DialogInterface dialog, int which) {
                         //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
                         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
-                        intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                         startActivity(intent);
                     }
                 });
                 builder.show();
+            }
+        });
+
+        /**
+         * Set parking when tapping on the screen
+         */
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng arg1) {
+                if (ParkMarker == null) {
+
+                    //LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
+                    ParkMarker = mMap.addMarker(new MarkerOptions()
+                            .position(arg1)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
+
+                    String Text = "Parking Location: \n" +
+                            "Latitude: " + arg1.latitude + "\n" +
+                            "Longitude: " + arg1.longitude;
+
+                    //Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Car parked", Toast.LENGTH_SHORT).show();
+
+                    Park_Button.setBackgroundResource(R.drawable.leave_btn);
+
+
+                } else {
+                    ParkMarker.remove();
+
+                    Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
+
+                    Park_Button.setBackgroundResource(R.drawable.park_btn);
+
+                    ParkMarker = null;
+                }
             }
         });
 
@@ -234,7 +374,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
             return true;
         }
 
@@ -354,5 +493,75 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         mMap.addMarker(new MarkerOptions()
                 .position(loc)
                 .title(name));
+    }
+
+    private void showTimerDialog() {
+        LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        View customDialog = inflater.inflate(R.layout.notification_dialog, null);
+        final EditText editHour = (EditText) customDialog.findViewById(R.id.edit_hour);
+        final EditText editMin = (EditText) customDialog.findViewById(R.id.edit_min);
+        editHour.setRawInputType(Configuration.KEYBOARD_QWERTY);
+        editMin.setRawInputType(Configuration.KEYBOARD_QWERTY);
+
+        AlertDialog.Builder settingDialog = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Set notification time")
+                .setView(customDialog)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        final TextView timer = (TextView) findViewById(R.id.timer);
+                        int hour = 0;
+                        int minute = 0;
+                        if (editHour.getText().toString().equals("")) {
+                            hour = 0;
+                        } else {
+                            hour = Integer.valueOf(editHour.getText().toString());
+                        }
+                        if (editMin.getText().toString().equals("")) {
+                            minute = 0;
+                        } else {
+                            minute = Integer.valueOf(editMin.getText().toString());
+                        }
+                        int totalSec = (hour * 60 * 60) + (minute * 60);
+
+                        new CountDownTimer(totalSec * 1000, 1000) {
+
+                            @Override
+                            public void onTick(long l) {
+                                int hourRemain = (int) ((l / 1000) / 3600);
+                                int minRemain = (int) (((l / 1000) - (hourRemain * 3600)) / 60);
+                                if (hourRemain < 10 && minRemain > 10) {
+                                    timer.setText("Time remain " + "0" + hourRemain + ":" + minRemain);
+                                }
+                                if (hourRemain > 10 && minRemain < 10) {
+                                    timer.setText("Time remain " + hourRemain + ":" + "0" + minRemain);
+                                }
+                                if (hourRemain < 10 && minRemain < 10) {
+                                    timer.setText("Time remain " + "0" + hourRemain + ":" + "0" + minRemain);
+                                }
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                setNotification = 0;
+                                timer.setText("");
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle("Times up")
+                                        .setIcon(android.R.drawable.ic_dialog_info)
+                                        .setPositiveButton("Ok", null)
+                                        .show();
+                            }
+                        }.start();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setNotification = 0;
+                        dialog.cancel();
+                    }
+                });
+        settingDialog.show();
     }
 }
