@@ -43,7 +43,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Alarm_Btn = null;
 
     MediaPlayer One_Bark;
-    MediaPlayer Barks;
+    //MediaPlayer Barks;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -237,6 +238,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
             One_Bark.start();
+
+            // Sound for alarm
+            //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
+            //Barks.start();
 
         }else{
 
