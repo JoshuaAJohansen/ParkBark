@@ -136,7 +136,7 @@ public class SFParking {
         lon = loc.getLongitude();
 
         url_string = "http://api.sfpark.org/sfpark/rest/availabilityservice?lat="+lat+"&long="+lon
-                + "&radius=50&uom=mile&response=json";
+                + "&radius=200&uom=mile&response=json";
 
         try {
             URL url = new URL(url_string);

@@ -108,10 +108,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                 //setParkMarker();
 
-                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                //LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                //Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                Location location = new Location("");
+                location.setLatitude(37.792275);
+                location.setLongitude(-122.397089);
 
                 if (location == null) {
+                    /*
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                     alertDialog.setTitle("Location not found");
                     alertDialog.setMessage("we regret to inform you, your last known location could not be found");
@@ -123,10 +128,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     });
                     // Showing Alert Message
                     alertDialog.show();
-
+                    */
 
                 } else {
-                    String streetNames = "";
+                    //String streetNames = "";
 
                     SFParking.service.retrieveParkingList(location);
 
@@ -137,7 +142,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                         for (int i = 0; i < SFParking.service.getNum_records(); i++) {
                             SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
 
-                            streetNames += place.getName() + "\n";
+                            //streetNames += place.getName() + "\n";
 
                             SFParking.LocationSFP locsfp = place.getLoc();
 
@@ -154,6 +159,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
 
                         }
+                        /*
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Available Parking Places");
                         alertDialog.setMessage(streetNames);
@@ -163,7 +169,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             }
                         });
                         alertDialog.show();
-
+                        */
                     } else {
                         Log.d(null, "Application can not connect to SF Parking service");
                     }
