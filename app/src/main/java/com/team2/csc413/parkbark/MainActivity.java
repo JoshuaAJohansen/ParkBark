@@ -40,6 +40,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
+    ImageButton Info_Button = null;
 
     MediaPlayer player;
 
@@ -59,6 +60,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         setContentView(R.layout.activity_main);
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+
+        Info_Button = (ImageButton) findViewById(R.id.Info_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);

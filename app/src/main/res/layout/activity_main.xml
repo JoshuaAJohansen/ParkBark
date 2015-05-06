@@ -25,6 +25,14 @@
             android:layout_gravity="right|bottom"
             android:background="@drawable/park_btn"
             android:clickable="true" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Info_Btn"
+            android:layout_gravity="left|bottom"
+            android:background="@drawable/info_btn"
+            android:clickable="true" />
     </FrameLayout>
 
 
