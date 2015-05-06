@@ -94,88 +94,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        /*
-        LatLng loc1 = new LatLng(37.7231644, -122.47552105);
-        LatLng loc2 = new LatLng(37.7231644, -123.47552105);
-        addLines(loc1, loc2);
-        */
 
         // Park Button On-Click listener
         // needs modification for current class
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //setParkMarker();
-
-                //LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                //Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                Location location = new Location("");
-                location.setLatitude(37.792275);
-                location.setLongitude(-122.397089);
-
-                if (location == null) {
-                    /*
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("Location not found");
-                    alertDialog.setMessage("we regret to inform you, your last known location could not be found");
-                    alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
-                            // closed
-                        }
-                    });
-                    // Showing Alert Message
-                    alertDialog.show();
-                    */
-
-                } else {
-                    //String streetNames = "";
-
-                    SFParking.service.retrieveParkingList(location);
-
-                    List park_li = SFParking.service.getParkingList();
-
-                    if (SFParking.service.getStatus().equals("SUCCESS")) {
-
-                        for (int i = 0; i < SFParking.service.getNum_records(); i++) {
-                            SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
-
-                            //streetNames += place.getName() + "\n";
-
-                            SFParking.LocationSFP locsfp = place.getLoc();
-
-                            if (locsfp.getNumLocations() > 1) {
-                                LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                                LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
-                                addLines(loc1, loc2);
-
-
-                            } else {
-                                LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                                addMarker(place.getName(), loc);
-                            }
-
-
-                        }
-                        /*
-                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                        alertDialog.setTitle("Available Parking Places");
-                        alertDialog.setMessage(streetNames);
-                        alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        alertDialog.show();
-                        */
-                    } else {
-                        Log.d(null, "Application can not connect to SF Parking service");
-                    }
-
-                }
-
             }
         });
 
@@ -270,8 +194,47 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_sfpark) {
+            // calls SFPark API
+            Location location = new Location("");
+            location.setLatitude(37.792275);
+            location.setLongitude(-122.397089);
+
+
+            SFParking.service.retrieveParkingList(location);
+
+            List park_li = SFParking.service.getParkingList();
+
+            if (SFParking.service.getStatus().equals("SUCCESS")) {
+
+                for (int i = 0; i < SFParking.service.getNum_records(); i++) {
+                    SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
+
+
+
+                    SFParking.LocationSFP locsfp = place.getLoc();
+
+                    if (locsfp.getNumLocations() > 1) {
+                        LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                        LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
+                        addLines(loc1, loc2);
+
+
+                    } else {
+                        LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                        addMarker(place.getName(), loc);
+                    }
+                }
+            } else {
+                Log.d(null, "Application can not connect to SF Parking service");
+            }
+
+            return true;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
