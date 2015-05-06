@@ -480,15 +480,25 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
+    /**
+     * draws a line between the co-ordinates
+     *
+     * @param loc1
+     * @param loc2
+     */
     private void addLines(LatLng loc1, LatLng loc2) {
         mMap
                 .addPolyline((new PolylineOptions())
-                        .add(loc1, loc2).width(5).color(Color.BLUE)
+                        .add(loc1, loc2).width(7).color(Color.BLUE)
                         .geodesic(true));
-        // move camera to zoom on map
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LOWER_MANHATTAN, 13));
     }
 
+    /**
+     * adds a marker to the co-ordinates
+     *
+     * @param name
+     * @param loc
+     */
     public void addMarker(String name, LatLng loc) {
         mMap.addMarker(new MarkerOptions()
                 .position(loc)
