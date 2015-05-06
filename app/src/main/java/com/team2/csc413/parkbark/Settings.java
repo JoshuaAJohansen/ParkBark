@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -23,6 +24,7 @@ public class Settings extends ActionBarActivity {
     CheckBox checkBark;
     CheckBox checkVibrate;
     ToggleButton buttonClear;
+    FrameLayout notificationFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +32,12 @@ public class Settings extends ActionBarActivity {
         setContentView(R.layout.activity_settings);
         clearHistory = false;
 
-        //link button ids
-        ToggleButton toggleAlarm = (ToggleButton) findViewById(R.id.toggleAlarm);
-        CheckBox checkBark = (CheckBox) findViewById(R.id.checkBark);
-        CheckBox checkVibrate = (CheckBox) findViewById(R.id.checkVibrate);
-        ToggleButton buttonClear = (ToggleButton) findViewById(R.id.buttonClear);
+        //link button and frame ids
+        toggleAlarm = (ToggleButton) findViewById(R.id.toggleAlarm);
+        checkBark = (CheckBox) findViewById(R.id.checkBark);
+        checkVibrate = (CheckBox) findViewById(R.id.checkVibrate);
+        buttonClear = (ToggleButton) findViewById(R.id.buttonClear);
+        notificationFrame = (FrameLayout) findViewById(R.id.frameNotification);
 
         //load preferences
         SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
@@ -45,6 +48,12 @@ public class Settings extends ActionBarActivity {
         checkBark.setChecked(bark);
         checkVibrate.setChecked(vibrate);
         buttonClear.setChecked(false);
+
+        if (alarm){
+            notificationFrame.setVisibility(View.VISIBLE);
+        } else  {
+            notificationFrame.setVisibility(View.GONE);
+        }
 
     }
 
@@ -64,7 +73,7 @@ public class Settings extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.save) {
+        if (id == R.id.saveSettings) {
             SharedPreferences saveSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
             SharedPreferences.Editor editor = saveSettings.edit();
             editor.putBoolean("ALARM",alarm);
@@ -72,6 +81,10 @@ public class Settings extends ActionBarActivity {
             editor.putBoolean("VIBRATE",vibrate);
             editor.putBoolean("CLEAR",clearHistory);
             editor.commit();
+
+            if (clearHistory){
+                //clear sqlite database here
+            }
 
             //Intent i = new Intent(Settings.this, MainActivity.class);
             //startActivity(i);
@@ -89,12 +102,10 @@ public class Settings extends ActionBarActivity {
             case R.id.toggleAlarm:
                 if (on) {
                     alarm = true;
-                    //checkBark.setEnabled(true);
-                    //checkVibrate.setEnabled(true);
+                    notificationFrame.setVisibility(View.VISIBLE);
                 } else {
                     alarm = false;
-                    //checkBark.setEnabled(false);
-                    //checkVibrate.setEnabled(false);
+                    notificationFrame.setVisibility(View.GONE);
                 }
                 break;
 

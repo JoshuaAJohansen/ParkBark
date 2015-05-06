@@ -33,7 +33,8 @@
         <activity
             android:name="com.team2.csc413.parkbark.Settings"
             android:label="Settings"
-            android:parentActivityName="com.team2.csc413.parkbark.MainActivity" >
+            android:parentActivityName="com.team2.csc413.parkbark.MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team2.csc413.parkbark.MainActivity" />
