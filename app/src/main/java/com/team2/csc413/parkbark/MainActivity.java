@@ -18,8 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v4.widget.DrawerLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import android.media.MediaPlayer;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,14 +40,19 @@ import java.util.Calendar;
 //TODO Include Park button that store park location through SQLite
 
 
+
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
+    // ImageButton Alarm_Btn = null;
 
     SQLiteDatabaseAdapter dbAdapter;
+
+    MediaPlayer One_Bark;
+    // MediaPlayer Barks;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -55,7 +63,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,15 +92,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         TimeToWalk_Button.setEnabled(false);
 
         //Park Button On-Click listener
-        Park_Button.setOnClickListener(new View.OnClickListener() {
+        Park_Button.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
-                setParkMarker(v);
-
+            public void onClick(View v){
+                setParkMarker();
             }
 
         });
-
 
     }
 
@@ -209,7 +214,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 
-    private void setMapUI() {
+    private void setMapUI(){
         mMap.setMyLocationEnabled(true);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMyLocationButtonEnabled(true);
@@ -233,14 +238,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    private void setParkMarker(View v) {
-        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    private void setParkMarker(){
+        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location == null) {
+        if(location == null){
             Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
-        } else if (ParkMarker == null) {
+        }else if(ParkMarker == null) {
 
-            LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
             ParkMarker = mMap.addMarker(new MarkerOptions()
                     .position(PARKED)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
@@ -252,14 +257,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
-
-            addParkingSpot(v);
-
+            
+            addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
+            
+            // Adding a media player and sound to media player
+            // On the start button click even the sound will start
+            One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
-        } else {
+            //One_Bark.start();
+
+            
+        }else{
+
             ParkMarker.remove();
-            //mMap.clear();
 
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
@@ -269,7 +280,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    public void addParkingSpot(View view) {
+    public void addParkingSpot() {
 
         Log.d("SQLTag", "Enter SQL function");
 
