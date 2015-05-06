@@ -17,4 +17,9 @@
         android:title="@string/action_sfpark"
         android:orderInCategory="101"
         app:showAsAction="never" />
+
+    <item android:id="@+id/action_navigation"
+        android:title="@string/action_navigation"
+        android:orderInCategory="102"
+        app:showAsAction="never" />
 </menu>

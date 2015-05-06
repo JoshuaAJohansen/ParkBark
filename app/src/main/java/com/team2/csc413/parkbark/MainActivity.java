@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -90,6 +91,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         setContentView(R.layout.activity_main);
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
+        Alarm_Btn = (ImageButton)findViewById(R.id.Alarm_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -110,137 +112,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setParkMarker();
+            }
+        });
 
-                //setParkMarker();
-
-                LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                // example for testing location when location can not be retrieved from LocationManager
-                //Location location = new Location("SF Parking location example");
-                //location.setLatitude(37.792275);
-                //location.setLongitude(-122.397089);
-
+        Alarm_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (setNotification == 0){
                     setNotification = 1;
                     showTimerDialog();
                 }else {
                     Toast.makeText(getApplicationContext(), "Notification already set", Toast.LENGTH_SHORT).show();
                 }
-
-
-                /*if (location == null) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("Location not found");
-                    alertDialog.setMessage("we regret to inform you, your last known location could not be found");
-                    alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int which) {
-                            // closed
-                        }
-                    });
-                    // Showing Alert Message
-                    alertDialog.show();
-
-
-                } else {
-                    String streetNames = "";
-
-                    SFParking.service.retrieveParkingList(location);
-
-                    List park_li = SFParking.service.getParkingList();
-
-                    if (SFParking.service.getStatus().equals("SUCCESS")) {
-
-                        for (int i = 0; i < SFParking.service.getNum_records(); i++) {
-                            SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
-
-                            streetNames += place.getName() + "\n";
-
-                            SFParking.LocationSFP locsfp = place.getLoc();
-
-                            if (locsfp.getNumLocations() > 1) {
-                                LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                                LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
-                                addLines(loc1, loc2);
-
-                            } else {
-                                LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                                addMarker(place.getName(), loc);
-                            }
-
-                            // example of retrieving ophrs from SFParking class
-                            /*
-                            List ophrs = place.getOPHRS();
-
-                            if (ophrs != null) {
-
-                                for (int j=0; j < ophrs.size(); j++) {
-
-                                    SFParking.OPHRS ops = (SFParking.OPHRS)ophrs.get(j);
-
-                                    streetNames += "from: " + ops.getFrom() + "\nto: " + ops.getTo()
-                                            + "\nbeggining: " + ops.getBeg() + "\nend: " + ops.getEnd() + "\n";
-                                }
-                            }
-
-                        }
-                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                        alertDialog.setTitle("Available Parking Places");
-                        alertDialog.setMessage(streetNames);
-                        alertDialog.setButton("Continue", new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        alertDialog.show();
-
-                    } else {
-                        Log.d(null, "Application can not connect to SF Parking service");
-                    }
-
-                }*/
-            }
-        });
-
-        /**
-         * Tapping on the screen longer will show a list where you can park
-         */
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng arg1) {
-                //Toast.makeText(getApplicationContext(), "This is a Toast......", Toast.LENGTH_LONG).show();
-                //LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                //final Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                final Location location = new Location("");
-                location.setLatitude(arg1.latitude);
-                location.setLongitude(arg1.longitude);
-                SFParking.service.retrieveParkingList(location);
-                List park_li2 = SFParking.service.getParkingList();
-                String[] parkingPlaces = new String[SFParking.service.getNum_records()];
-                final LatLng[] parkingLoc = new LatLng[SFParking.service.getNum_records()];
-                for (int x = 0; x < SFParking.service.getNum_records(); x++) {
-                    SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li2.get(x);
-                    parkingPlaces[x] = place.getName();
-                    SFParking.LocationSFP locsfp = place.getLoc();
-                    parkingLoc[x] = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                }
-
-                AlertDialog.Builder MyListAlertDialog = new AlertDialog.Builder(MainActivity.this);
-                MyListAlertDialog.setTitle("Available Parking Places");
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Available Parking Places");
-                builder.setItems(parkingPlaces, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
-                        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
-                        intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
-                        startActivity(intent);
-                    }
-                });
-                builder.show();
             }
         });
 
@@ -249,17 +133,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
          */
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng arg1) {
+            public void onMapClick(LatLng currentlocation) {
                 if (ParkMarker == null) {
 
                     //LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
                     ParkMarker = mMap.addMarker(new MarkerOptions()
-                            .position(arg1)
+                            .position(currentlocation)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
 
                     String Text = "Parking Location: \n" +
-                            "Latitude: " + arg1.latitude + "\n" +
-                            "Longitude: " + arg1.longitude;
+                            "Latitude: " + currentlocation.latitude + "\n" +
+                            "Longitude: " + currentlocation.longitude;
 
                     //Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Car parked", Toast.LENGTH_SHORT).show();
@@ -338,6 +222,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if (id == R.id.action_sfpark) {
             // calls SFPark API
             drawParking();
+            return true;
+        }
+
+        if (id == R.id.action_navigation){
+            navigate();
             return true;
         }
 
@@ -519,6 +408,38 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         } else {
             Log.d(null, "Application can not connect to SF Parking service");
         }
+    }
+
+    public void navigate(){
+        final Location location = new Location("");
+        location.setLatitude(37.792275);
+        location.setLongitude(-122.397089);
+        SFParking.service.retrieveParkingList(location);
+        List park_li2 = SFParking.service.getParkingList();
+        String[] parkingPlaces = new String[SFParking.service.getNum_records()];
+        final LatLng[] parkingLoc = new LatLng[SFParking.service.getNum_records()];
+        for (int x = 0; x < SFParking.service.getNum_records(); x++) {
+            SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li2.get(x);
+            parkingPlaces[x] = place.getName();
+            SFParking.LocationSFP locsfp = place.getLoc();
+            parkingLoc[x] = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+        }
+
+        AlertDialog.Builder MyListAlertDialog = new AlertDialog.Builder(MainActivity.this);
+        MyListAlertDialog.setTitle("Available Parking Places");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Available Parking Places");
+        builder.setItems(parkingPlaces, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
+                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
+                intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                startActivity(intent);
+            }
+        });
+        builder.show();
     }
 
     private void showTimerDialog() {
