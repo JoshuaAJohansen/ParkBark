@@ -46,6 +46,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
     boolean alarmOn;
+    boolean barkOn;
+    boolean vibrateOn;
     public static final String SETTINGS = "AppPref";
 
     SQLiteDatabaseAdapter dbAdapter;
@@ -98,6 +100,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         //load preferences
         SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
         alarmOn = loadSettings.getBoolean("ALARM", true);
+        barkOn = loadSettings.getBoolean("BARK", true);
+        vibrateOn = loadSettings.getBoolean("VIBRATE", true);
 
     }
 

@@ -7,27 +7,45 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
 public class Settings extends ActionBarActivity {
 
-Boolean alarm;
+    Boolean alarm;
+    Boolean bark;
+    Boolean vibrate;
+    Boolean clearHistory;
     public static final String SETTINGS = "AppPref";
+    ToggleButton toggleAlarm;
+    CheckBox checkBark;
+    CheckBox checkVibrate;
+    ToggleButton buttonClear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        clearHistory = false;
 
         //link button ids
         ToggleButton toggleAlarm = (ToggleButton) findViewById(R.id.toggleAlarm);
+        CheckBox checkBark = (CheckBox) findViewById(R.id.checkBark);
+        CheckBox checkVibrate = (CheckBox) findViewById(R.id.checkVibrate);
+        ToggleButton buttonClear = (ToggleButton) findViewById(R.id.buttonClear);
 
         //load preferences
         SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
         alarm = loadSettings.getBoolean("ALARM", true);
+        bark = loadSettings.getBoolean("BARK", true);
+        vibrate = loadSettings.getBoolean("VIBRATE", true);
         toggleAlarm.setChecked(alarm); //set button positions
+        checkBark.setChecked(bark);
+        checkVibrate.setChecked(vibrate);
+        buttonClear.setChecked(false);
+
     }
 
 
@@ -46,17 +64,17 @@ Boolean alarm;
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.save) {
+        if (id == R.id.save) {
             SharedPreferences saveSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
             SharedPreferences.Editor editor = saveSettings.edit();
             editor.putBoolean("ALARM",alarm);
-            editor.apply();
+            editor.putBoolean("BARK",bark);
+            editor.putBoolean("VIBRATE",vibrate);
+            editor.putBoolean("CLEAR",clearHistory);
+            editor.commit();
 
-            Intent i = new Intent(Settings.this, MainActivity.class);
-            startActivity(i);
+            //Intent i = new Intent(Settings.this, MainActivity.class);
+            //startActivity(i);
             return true;
         }
 
@@ -67,12 +85,47 @@ Boolean alarm;
         // Check button position
         boolean on = ((ToggleButton) view).isChecked();
 
-        if (on) {
-            alarm = true;
-            //startActivity(new Intent(Settings.this, MainActivity.class));
-        } else {
-            alarm = false;
+        switch (view.getId()) {
+            case R.id.toggleAlarm:
+                if (on) {
+                    alarm = true;
+                    //checkBark.setEnabled(true);
+                    //checkVibrate.setEnabled(true);
+                } else {
+                    alarm = false;
+                    //checkBark.setEnabled(false);
+                    //checkVibrate.setEnabled(false);
+                }
+                break;
+
+                case R.id.buttonClear:
+                    if (on)
+                        clearHistory = true;
+                    else
+                        clearHistory = false;
+                break;
+
         }
     }
 
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.checkBark:
+                if (checked)
+                bark = true;
+                else
+                bark = false;
+                break;
+            case R.id.checkVibrate:
+                if (checked)
+                vibrate = true;
+                else
+                vibrate = false;
+                break;
+        }
+    }
 }

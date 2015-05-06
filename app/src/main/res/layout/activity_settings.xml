@@ -6,81 +6,193 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.team2.csc413.parkbark.Settings">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:minHeight="8dp">
+        android:id="@+id/scrollView">
 
-        <ToggleButton
-            android:layout_width="109dp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="New ToggleButton"
-            android:id="@+id/toggleAlarm"
-            android:layout_gravity="right"
-            android:onClick="onToggleClicked"
-            android:layout_marginRight="15dp" />
+            android:minHeight="8dp">
 
 
-        <RadioGroup
-            android:layout_width="113dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right">
-
-            <RadioButton
+            <FrameLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Bark"
-                android:id="@+id/radioButton"
-                android:layout_marginTop="15dp" />
+                android:layout_height="fill_parent"
+                android:background="@android:drawable/editbox_dropdown_light_frame">
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vibrate"
-                android:id="@+id/radioButton2"
-                android:layout_gravity="left" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Alarm"
+                    android:id="@+id/textView"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="20dp" />
 
-        </RadioGroup>
+                <ToggleButton
+                    android:layout_width="109dp"
+                    android:layout_height="wrap_content"
+                    android:text="New ToggleButton"
+                    android:id="@+id/toggleAlarm"
+                    android:onClick="onToggleClicked"
+                    android:layout_marginRight="15dp"
+                    android:layout_gravity="right"
+                    android:enabled="true" />
+            </FrameLayout>
 
-        <Button
-            android:layout_marginTop="50dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear Parking History"
-            android:id="@+id/clearbutton"
-            android:layout_alignTop="@+id/toggleAlarm"
-            android:layout_gravity="center_horizontal" />
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame">
 
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Notification"
+                    android:id="@+id/textView2"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:autoText="false" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="30dp">
 
-        <TextView
-            android:layout_width="256dp"
-            android:layout_height="45dp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Alarm"
-            android:id="@+id/textView"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical" />
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bark"
+                        android:id="@+id/checkBark"
+                        android:onClick="onCheckboxClicked"
+                        android:enabled="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Notification"
-            android:id="@+id/textView2"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"
-            android:layout_marginTop="20dp" />
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vibrate"
+                        android:id="@+id/checkVibrate"
+                        android:onClick="onCheckboxClicked"
+                        android:enabled="true" />
+                </LinearLayout>
 
-    </LinearLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="10dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame">
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New ToggleButton"
+                    android:id="@+id/buttonClear"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:singleLine="false"
+                    android:textColorHighlight="#ffff0000"
+                    android:enabled="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Clear Park History"
+                    android:id="@+id/textView3"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="20dp" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Test Settings Box"
+                    android:id="@+id/textView5"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Test Settings Box"
+                    android:id="@+id/textView7"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Test Settings Box"
+                    android:id="@+id/textView6"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame"
+                android:layout_marginTop="10dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Test Settings Box"
+                    android:id="@+id/textView8"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Test Settings Box"
+                    android:id="@+id/textView4"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
