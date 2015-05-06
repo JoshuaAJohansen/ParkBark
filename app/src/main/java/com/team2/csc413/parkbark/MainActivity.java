@@ -31,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
+import android.media.MediaPlayer;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -54,6 +56,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
     int setNotification = 0;
+    ImageButton Alarm_Btn = null;
+
+    MediaPlayer One_Bark;
+    //MediaPlayer Barks;
 
 
     /**
@@ -430,7 +436,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
+            // Adding a media player and sound to media player
+            // On the start button click even the sound will start
+            One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
+            One_Bark.start();
+
+            // Sound for alarm
+            //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
+            //Barks.start();
 
         }else{
 
@@ -576,4 +590,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 });
         settingDialog.show();
     }
+
 }
+
+
