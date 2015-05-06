@@ -82,6 +82,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        TimeToWalk_Button.setEnabled(false);
+
         //Park Button On-Click listener
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +94,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         });
 
-        //TimeToWalk_Button.setOnClickListener();
 
     }
 
@@ -254,6 +255,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             addParkingSpot(v);
 
+            TimeToWalk_Button.setEnabled(true);
 
         } else {
             ParkMarker.remove();
@@ -364,16 +366,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         } else return -1.0;
     }
 
-    public void setWalkMarker(View v){
-        if(ParkMarker == null){
-            TimeToWalk_Button.setEnabled(false);
-        } else {
-
-        }
-    }
-
     //function that calculates and does a toast for the time to walk back to car.
-    public void timeToWalk (){
+    public void timeToWalk (View v){
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 

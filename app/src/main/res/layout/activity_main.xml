@@ -32,7 +32,8 @@
             android:id="@+id/TimeToWalk_Btn"
             android:layout_gravity="left|bottom"
             android:background="@drawable/timetowalk_btn"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:onClick="timeToWalk"/>
     </FrameLayout>
 
 
