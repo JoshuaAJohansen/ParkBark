@@ -42,7 +42,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Park_Button = null;
     ImageButton Info_Button = null;
 
-    MediaPlayer player;
+    MediaPlayer One_Bark;
+    MediaPlayer Barks;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -60,8 +61,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         setContentView(R.layout.activity_main);
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
-
-        Info_Button = (ImageButton) findViewById(R.id.Info_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -235,9 +234,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            player=MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
-            player.start();
+            One_Bark.start();
 
         }else{
 

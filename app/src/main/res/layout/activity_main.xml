@@ -29,9 +29,9 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Info_Btn"
-            android:layout_gravity="left|bottom"
-            android:background="@drawable/info_btn"
+            android:id="@+id/Alarm_Btn"
+            android:layout_gravity="center|bottom"
+            android:background="@drawable/alarm_btn"
             android:clickable="true" />
     </FrameLayout>
 
