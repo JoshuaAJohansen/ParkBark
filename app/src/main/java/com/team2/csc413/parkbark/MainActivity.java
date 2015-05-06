@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     public void onClick(DialogInterface dialog, int which) {
                         //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
                         final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
-                        intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                         startActivity(intent);
                     }
                 });
@@ -196,39 +196,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         if (id == R.id.action_sfpark) {
             // calls SFPark API
-            Location location = new Location("");
-            location.setLatitude(37.792275);
-            location.setLongitude(-122.397089);
-
-
-            SFParking.service.retrieveParkingList(location);
-
-            List park_li = SFParking.service.getParkingList();
-
-            if (SFParking.service.getStatus().equals("SUCCESS")) {
-
-                for (int i = 0; i < SFParking.service.getNum_records(); i++) {
-                    SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
-
-
-
-                    SFParking.LocationSFP locsfp = place.getLoc();
-
-                    if (locsfp.getNumLocations() > 1) {
-                        LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                        LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
-                        addLines(loc1, loc2);
-
-
-                    } else {
-                        LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                        addMarker(place.getName(), loc);
-                    }
-                }
-            } else {
-                Log.d(null, "Application can not connect to SF Parking service");
-            }
-
+            drawParking();
             return true;
         }
 
@@ -364,5 +332,43 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         mMap.addMarker(new MarkerOptions()
                 .position(loc)
                 .title(name));
+    }
+
+    /**
+     * makes a request to SF Park and draws the parking locaions on the map
+     */
+    public void drawParking() {
+        Location location = new Location("");
+        location.setLatitude(37.792275);
+        location.setLongitude(-122.397089);
+
+
+        SFParking.service.retrieveParkingList(location);
+
+        List park_li = SFParking.service.getParkingList();
+
+        if (SFParking.service.getStatus().equals("SUCCESS")) {
+
+            for (int i = 0; i < SFParking.service.getNum_records(); i++) {
+                SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
+
+
+
+                SFParking.LocationSFP locsfp = place.getLoc();
+
+                if (locsfp.getNumLocations() > 1) {
+                    LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                    LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
+                    addLines(loc1, loc2);
+
+
+                } else {
+                    LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+                    addMarker(place.getName(), loc);
+                }
+            }
+        } else {
+            Log.d(null, "Application can not connect to SF Parking service");
+        }
     }
 }
