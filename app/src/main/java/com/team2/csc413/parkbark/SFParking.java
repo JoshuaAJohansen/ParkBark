@@ -12,7 +12,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
- * Created by Michael and Aaron on 5/04/15.
+ * Created by Aaron on 5/06/15.
  */
 public class SFParking {
 
