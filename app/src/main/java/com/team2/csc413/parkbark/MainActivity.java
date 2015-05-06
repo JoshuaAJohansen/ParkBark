@@ -40,7 +40,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     GoogleMap mMap;
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
-    ImageButton Info_Button = null;
+    ImageButton Alarm_Btn = null;
 
     MediaPlayer One_Bark;
     MediaPlayer Barks;
