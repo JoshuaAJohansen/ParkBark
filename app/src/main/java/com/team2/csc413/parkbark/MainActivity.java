@@ -47,12 +47,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
-    ImageButton Alarm_Btn = null;
+    // ImageButton Alarm_Btn = null;
 
     SQLiteDatabaseAdapter dbAdapter;
 
     MediaPlayer One_Bark;
-    //MediaPlayer Barks;
+    // MediaPlayer Barks;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -258,18 +258,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
             
-            addParkingSpot(v);
+            addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
             
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
             One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
-            One_Bark.start();
+            //One_Bark.start();
 
-            // Sound for alarm
-            //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
-            //Barks.start();
             
         }else{
 
@@ -283,7 +280,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    public void addParkingSpot(View view) {
+    public void addParkingSpot() {
 
         Log.d("SQLTag", "Enter SQL function");
 
