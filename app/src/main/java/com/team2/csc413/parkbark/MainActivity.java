@@ -200,6 +200,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         switch (number) {
             case 1:
                 mTitle = getString(R.string.title_section1);
+                mMap.clear();
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
@@ -347,7 +348,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            //One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
             One_Bark.start();
 
@@ -356,7 +357,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             //Barks.start();
 
         }else{
-
+            //mMap.clear();
             ParkMarker.remove();
 
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
@@ -558,7 +559,30 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 });
         settingDialog.show();
     }
+//TODO fix addRemoteParkingSpot to get lat/long for remote markers
+    /*public void addRemoteParkingSpot(LatLng remoteMarker) {
 
+        Log.d("SQLTag", "Enter SQL function");
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
+
+        String date = dateFormat.format(c.getTime());
+        String time = timeFormat.format(c.getTime());
+        double lat = remoteMarker.latitude();
+        double lng = remoteMarker.longitude();
+        String duration = "duration";
+        String restriction = "restriction";
+
+        dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
+
+    }
+    */
     public void showHistoryParking(){
         String getUID, getDATE, getTIME, getDURATION, getRESTRICTION;
         double getLAT, getLNG;
