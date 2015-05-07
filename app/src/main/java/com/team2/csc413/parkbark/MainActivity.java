@@ -60,14 +60,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
 
-    long sqlID;
-
     private SQLiteDatabase database;
 
     ImageButton Alarm_Btn = null;
     int setNotification = 0;
     MediaPlayer One_Bark;
-    SQLiteDatabaseAdapter dbAdapter;
     
     //MediaPlayer Barks;
     
@@ -325,7 +322,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    private void setParkMarker(View v) {
+    private void setParkMarker() {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location == null) {
@@ -347,7 +344,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             
             addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
-            
+
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
             One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
@@ -375,8 +372,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     /**
      * draws a line between the co-ordinates
      *
-     * @param loc1
-     * @param loc2
+     * @param loc1 starting location
+     * @param loc2 ending location
      */
     private void addLines(LatLng loc1, LatLng loc2) {
         mMap
