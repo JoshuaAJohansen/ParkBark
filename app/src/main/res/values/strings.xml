@@ -15,5 +15,5 @@
     <string name="current_location">Current Location</string>
     <string name="textAlarm">Alarm</string>
     <string name="textNotification">Notification</string>
-    <string name="textClearHistory">Clear Park History</string>
+    <string name="textClearHistory">Clear History</string>
 </resources>

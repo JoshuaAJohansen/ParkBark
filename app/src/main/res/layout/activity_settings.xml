@@ -20,7 +20,7 @@
 
             <FrameLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="80dp"
                 android:background="@android:drawable/editbox_dropdown_light_frame"
                 android:id="@+id/frameAlarm">
 
@@ -41,13 +41,13 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="172dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Put a description here"
+                        android:text="Reminder to move car before parking expires"
                         android:id="@+id/textView9"
                         android:layout_gravity="left"
-                        android:layout_marginLeft="25dp" />
+                        android:layout_marginLeft="20dp" />
 
                 </LinearLayout>
 
@@ -57,17 +57,18 @@
                     android:id="@+id/toggleAlarm"
                     android:onClick="onToggleClicked"
                     android:layout_marginRight="15dp"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center_vertical|right"
                     android:enabled="true" />
 
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="80dp"
                 android:layout_marginTop="5dp"
                 android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:id="@+id/frameNotification">
+                android:id="@+id/frameNotification"
+                android:layout_marginLeft="10dp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -87,20 +88,20 @@
                         android:autoText="false" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="122dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Put a description here"
+                        android:text="Methods by which to be notified"
                         android:id="@+id/textView10"
-                        android:layout_marginLeft="25dp" />
+                        android:layout_marginLeft="20dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="15dp">
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="20dp">
 
                     <CheckBox
                         android:layout_width="wrap_content"
@@ -108,7 +109,8 @@
                         android:text="Bark"
                         android:id="@+id/checkBark"
                         android:onClick="onCheckboxClicked"
-                        android:enabled="true" />
+                        android:enabled="true"
+                        android:layout_gravity="center_vertical" />
 
                     <CheckBox
                         android:layout_width="wrap_content"
@@ -116,27 +118,71 @@
                         android:text="Vibrate"
                         android:id="@+id/checkVibrate"
                         android:onClick="onCheckboxClicked"
-                        android:enabled="true" />
+                        android:enabled="true"
+                        android:layout_gravity="center_vertical" />
                 </LinearLayout>
 
             </FrameLayout>
 
             <FrameLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginTop="5dp"
+                android:layout_height="80dp"
                 android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:id="@+id/frameClearHistory">
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/frameWalk">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Walk Back To Car"
+                        android:id="@+id/textTimer"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:textSize="20sp"
+                        android:autoText="false" />
+
+                    <TextView
+                        android:layout_width="149dp"
+                        android:layout_height="43dp"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Estimate addition time for walking to car"
+                        android:id="@+id/textView12"
+                        android:layout_marginLeft="20dp" />
+                </LinearLayout>
 
                 <ToggleButton
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:id="@+id/buttonClear"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="15dp"
-                    android:singleLine="false"
-                    android:textColorHighlight="#ffff0000"
-                    android:enabled="true" />
+                    android:id="@+id/toggleWalk"
+                    android:layout_gravity="right|center_vertical"
+                    android:onClick="onToggleClicked"
+                    android:layout_marginRight="15dp" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:drawable/editbox_dropdown_light_frame"
+                android:id="@+id/frameClearHistory">
+
+                <Button
+                    android:layout_width="56dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/clear"
+                    android:onClick="onButtonClicked"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="16dp"
+                    android:background="@android:drawable/ic_menu_delete" />
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -155,89 +201,15 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="159dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Put a description here"
+                        android:text="Clear all saved parking spots from database"
                         android:id="@+id/textView11"
-                        android:layout_marginLeft="25dp" />
+                        android:layout_marginLeft="20dp" />
+
                 </LinearLayout>
 
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Test Settings Box"
-                    android:id="@+id/textView5"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Test Settings Box"
-                    android:id="@+id/textView7"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Test Settings Box"
-                    android:id="@+id/textView6"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Test Settings Box"
-                    android:id="@+id/textView8"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_dropdown_light_frame"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Test Settings Box"
-                    android:id="@+id/textView4"
-                    android:layout_gravity="center" />
             </FrameLayout>
 
         </LinearLayout>

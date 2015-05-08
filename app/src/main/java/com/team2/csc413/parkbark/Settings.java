@@ -1,5 +1,7 @@
 package com.team2.csc413.parkbark;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -15,44 +18,51 @@ import android.widget.ToggleButton;
 
 public class Settings extends ActionBarActivity {
 
-    Boolean alarm;
-    Boolean bark;
-    Boolean vibrate;
-    Boolean clearHistory;
+    boolean alarm;
+    boolean bark;
+    boolean vibrate;
+    boolean walk;
     public static final String SETTINGS = "AppPref";
     ToggleButton toggleAlarm;
     CheckBox checkBark;
     CheckBox checkVibrate;
-    ToggleButton buttonClear;
     FrameLayout notificationFrame;
+    FrameLayout walkingFrame;
+    ToggleButton toggleWalk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        clearHistory = false;
 
         //link button and frame ids
         toggleAlarm = (ToggleButton) findViewById(R.id.toggleAlarm);
         checkBark = (CheckBox) findViewById(R.id.checkBark);
         checkVibrate = (CheckBox) findViewById(R.id.checkVibrate);
-        buttonClear = (ToggleButton) findViewById(R.id.buttonClear);
+        toggleWalk = (ToggleButton) findViewById(R.id.toggleWalk);
         notificationFrame = (FrameLayout) findViewById(R.id.frameNotification);
+        walkingFrame = (FrameLayout) findViewById(R.id.frameWalk);
 
         //load preferences
-        SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
+        SharedPreferences loadSettings = getSharedPreferences(SETTINGS, MODE_PRIVATE);
         alarm = loadSettings.getBoolean("ALARM", true);
         bark = loadSettings.getBoolean("BARK", true);
         vibrate = loadSettings.getBoolean("VIBRATE", true);
-        toggleAlarm.setChecked(alarm); //set button positions
+        walk = loadSettings.getBoolean("WALK", true);
+
+        //set button positions
+        toggleAlarm.setChecked(alarm);
         checkBark.setChecked(bark);
         checkVibrate.setChecked(vibrate);
-        buttonClear.setChecked(false);
+        toggleWalk.setChecked(walk);
 
-        if (alarm){
+        //hide notification and walking frames if alarm is off
+        if (alarm) {
             notificationFrame.setVisibility(View.VISIBLE);
-        } else  {
+            walkingFrame.setVisibility(View.VISIBLE);
+        } else {
             notificationFrame.setVisibility(View.GONE);
+            walkingFrame.setVisibility(View.GONE);
         }
 
     }
@@ -74,20 +84,18 @@ public class Settings extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.saveSettings) {
-            SharedPreferences saveSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
+            //store variables with preferences
+            SharedPreferences saveSettings = getSharedPreferences(SETTINGS, MODE_PRIVATE);
             SharedPreferences.Editor editor = saveSettings.edit();
-            editor.putBoolean("ALARM",alarm);
-            editor.putBoolean("BARK",bark);
-            editor.putBoolean("VIBRATE",vibrate);
-            editor.putBoolean("CLEAR",clearHistory);
+            editor.putBoolean("ALARM", alarm);
+            editor.putBoolean("BARK", bark);
+            editor.putBoolean("VIBRATE", vibrate);
+            editor.putBoolean("WALK", walk);
             editor.commit();
 
-            if (clearHistory){
-                //clear sqlite database here
-            }
+            Toast.makeText(getApplicationContext(), "Settings Saved",
+                    Toast.LENGTH_LONG).show();
 
-            //Intent i = new Intent(Settings.this, MainActivity.class);
-            //startActivity(i);
             return true;
         }
 
@@ -95,25 +103,72 @@ public class Settings extends ActionBarActivity {
     }
 
     public void onToggleClicked(View view) {
-        // Check button position
+        // Check toggle button position
         boolean on = ((ToggleButton) view).isChecked();
 
         switch (view.getId()) {
+            //alarm button pressed
             case R.id.toggleAlarm:
                 if (on) {
                     alarm = true;
+                    //hide notif and walk tabs
                     notificationFrame.setVisibility(View.VISIBLE);
+                    walkingFrame.setVisibility(View.VISIBLE);
                 } else {
                     alarm = false;
+                    //show notif and walk tabs
                     notificationFrame.setVisibility(View.GONE);
+                    walkingFrame.setVisibility(View.GONE);
                 }
                 break;
 
-                case R.id.buttonClear:
-                    if (on)
-                        clearHistory = true;
-                    else
-                        clearHistory = false;
+            //walk button pressed
+            case R.id.toggleWalk:
+                if (on) {
+                    walk = true;
+                } else {
+                    walk = false;
+                }
+                break;
+
+        }
+    }
+
+    public void onButtonClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear:
+                AlertDialog.Builder clearWarning = new AlertDialog.Builder(this);
+
+                clearWarning.setTitle("Clear History");
+                clearWarning.setMessage("Are you sure you want to delete all saved parking spots?");
+
+                //selected no, do nothing
+                clearWarning.setPositiveButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+
+                });
+
+                //selected yes
+                clearWarning.setNegativeButton("YES", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Toast.makeText(getApplicationContext(), "Insert code - Clear database",
+                                Toast.LENGTH_LONG).show();
+
+                        dialog.dismiss();
+                    }
+
+                });
+
+                AlertDialog alert = clearWarning.create();
+                alert.show();
+
                 break;
 
         }
@@ -124,18 +179,18 @@ public class Settings extends ActionBarActivity {
         boolean checked = ((CheckBox) view).isChecked();
 
         // Check which checkbox was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.checkBark:
                 if (checked)
-                bark = true;
+                    bark = true;
                 else
-                bark = false;
+                    bark = false;
                 break;
             case R.id.checkVibrate:
                 if (checked)
-                vibrate = true;
+                    vibrate = true;
                 else
-                vibrate = false;
+                    vibrate = false;
                 break;
         }
     }

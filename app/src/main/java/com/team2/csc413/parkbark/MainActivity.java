@@ -48,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     boolean alarmOn;
     boolean barkOn;
     boolean vibrateOn;
+    boolean walkOn;
     public static final String SETTINGS = "AppPref";
 
     SQLiteDatabaseAdapter dbAdapter;
@@ -67,6 +68,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //load preferences from settings. Default value = true
+        SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
+        alarmOn = loadSettings.getBoolean("ALARM", true);
+        barkOn = loadSettings.getBoolean("BARK", true);
+        vibrateOn = loadSettings.getBoolean("VIBRATE", true);
+        walkOn = loadSettings.getBoolean("WALK", true);
 
         dbAdapter = new SQLiteDatabaseAdapter(this);
 
@@ -96,12 +104,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             }
 
         });
-
-        //load preferences
-        SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
-        alarmOn = loadSettings.getBoolean("ALARM", true);
-        barkOn = loadSettings.getBoolean("BARK", true);
-        vibrateOn = loadSettings.getBoolean("VIBRATE", true);
 
     }
 
