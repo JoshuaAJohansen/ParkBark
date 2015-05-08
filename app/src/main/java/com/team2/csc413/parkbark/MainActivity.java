@@ -1,8 +1,9 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -435,7 +436,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             public void onClick(DialogInterface dialog, int which) {
                 //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
                 final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
-                intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 startActivity(intent);
             }
         });
@@ -471,6 +472,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             minute = Integer.valueOf(editMin.getText().toString());
                         }
                         int totalSec = (hour * 60 * 60) + (minute * 60);
+                        Long time = new GregorianCalendar().getTimeInMillis() + (totalSec*1000);
+
+                        AlarmManager alarm = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this, AlarmReciever.class);
+                        PendingIntent pending = PendingIntent.getBroadcast(MainActivity.this, 1, intent, 0);
+                        alarm.set(AlarmManager.RTC_WAKEUP, time, pending);
 
                         new CountDownTimer(totalSec * 1000, 1000) {
 
@@ -493,11 +501,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             public void onFinish() {
                                 setNotification = 0;
                                 timer.setText("");
-                                new AlertDialog.Builder(MainActivity.this)
+                                /*new AlertDialog.Builder(MainActivity.this)
                                         .setTitle("Times up")
                                         .setIcon(android.R.drawable.ic_dialog_info)
                                         .setPositiveButton("Ok", null)
-                                        .show();
+                                        .show();*/
                             }
                         }.start();
                     }
