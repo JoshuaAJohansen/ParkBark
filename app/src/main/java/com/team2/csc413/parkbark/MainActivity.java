@@ -637,7 +637,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     /**
      * Selects latitude from last row of database and returns it
-     * @return double myLat or -1.0 if database is empty
+     * @return double myLAT or -1.0 if database is empty
      */
     public double getLAT() {
         double myLAT;
@@ -649,6 +649,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         } else return (-1.0);
     }
 
+    /**
+     * Selects longitude from last row of database and returns it
+     * @return double myLNG or -1.0 if database is empty
+     */
     public double getLNG() {
         double myLNG;
         Cursor cursor = dbAdapter.getAllParkingSpot();
