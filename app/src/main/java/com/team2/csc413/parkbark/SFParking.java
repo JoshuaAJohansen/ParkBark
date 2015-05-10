@@ -1,8 +1,22 @@
 package com.team2.csc413.parkbark;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 import android.util.JsonReader;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -12,7 +26,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 
 /**
- * Created by Aaron on 5/06/15.
+ * Created by Aaron Waterman on 5/10/2015.
  */
 public class SFParking {
 
@@ -25,8 +39,6 @@ public class SFParking {
     // data to be stored from Json request
     private String status,
             message,
-            inter,
-            tel,
             avail_update_t,
             avail_request_t;
     private int requestID,
@@ -38,8 +50,6 @@ public class SFParking {
     private SFParking() {
         status = null;
         message=null;
-        inter=null;
-        tel=null;
         avail_request_t=null;
         avail_update_t=null;
         requestID=-1;
@@ -65,17 +75,9 @@ public class SFParking {
         return udf1;
     }
 
-    public int getNum_records() {
-        return num_records;
-    }
+    public int getNum_records() { return num_records; }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public String getInter() { return inter; }
-
-    public String getTel() { return tel; }
+    public String getMessage() { return message; }
 
     public String getAvail_update_t() {
         return avail_update_t;
@@ -184,12 +186,6 @@ public class SFParking {
                     } else if (name.equals("MESSAGE")) {
                         message = reader.nextString();
 
-                    } else if (name.equals("INTER")) {
-                        inter = reader.nextString();
-
-                    } else if (name.equals("TEL")) {
-                        tel = reader.nextString();
-
                     } else if (name.equals("AVAILABILITY_UPDATED_TIMESTAMP")) {
                         avail_update_t = reader.nextString();
 
@@ -237,7 +233,9 @@ public class SFParking {
 
         String type = null,
                name = null,
-               desc = null;
+               desc = null,
+               inter = null,
+               tel = null;
         int bfid = -1,
             occ = -1,
             oper = -1,
@@ -259,6 +257,12 @@ public class SFParking {
 
             } else if (reader_s.equals("DESC")) {
                 desc = reader.nextString();
+
+            }else if (reader_s.equals("INTER")) {
+                inter = reader.nextString();
+
+            } else if (reader_s.equals("TEL")) {
+                tel = reader.nextString();
 
             } else if (reader_s.equals("BFID")) {
                 bfid = reader.nextInt();
@@ -287,7 +291,7 @@ public class SFParking {
         }
         reader.endObject();
 
-        return new ParkingPlace(type, name, desc, bfid, occ, oper, pts, ophrs, rates, loc);
+        return new ParkingPlace(type, name, desc, inter, tel, bfid, occ, oper, pts, ophrs, rates, loc);
     }
 
 
@@ -455,7 +459,9 @@ public class SFParking {
     public class ParkingPlace {
         private String type,
                        name,
-                       desc;
+                       desc,
+                       inter,
+                       tel;
         private int bfid,
                     occ,
                     oper,
@@ -464,11 +470,13 @@ public class SFParking {
         private List<OPHRS> ophrs;
         private List<Rate> rates;
 
-        private ParkingPlace(String type, String name, String desc, int bfid, int occ,
+        private ParkingPlace(String type, String name, String desc, String inter, String tel, int bfid, int occ,
                                   int oper, int pts, List<OPHRS> ophrs, List<Rate> rates, LocationSFP loc ) {
             this.type = type;
             this.name = name;
             this.desc = desc;
+            this.inter = inter;
+            this.tel = tel;
             this.bfid = bfid;
             this.occ = occ;
             this.oper = oper;
@@ -487,33 +495,31 @@ public class SFParking {
             return name;
         }
 
-        public String getDesc() {
-            return desc;
-        }
+        public String getDescription() { return desc; }
 
-        public LocationSFP getLoc() {
-            return loc;
-        }
+        public String getIntersection() { return inter; }
+
+        public String getTelNum() { return tel; }
+
+        public LocationSFP getLoc() { return loc; }
 
         public int getBfid() {
             return bfid;
         }
 
-        public int getOcc() {
+        public int getOccSpaces() {
             return occ;
         }
 
-        public int getOper() {
+        public int getOperSpaces() {
             return oper;
         }
 
-        public int getPts() {
+        public int getNumLocations() {
             return pts;
         }
 
-        public List getOPHRS() {
-            return ophrs;
-        }
+        public List getOperHours() { return ophrs; }
 
         public List getRates() {
             return rates;
@@ -600,7 +606,7 @@ public class SFParking {
     }
 
     public class LocationSFP {
-        private int numloc;
+        //private int numloc;
 
         private double lat1, lng1,
                lat2, lng2;
@@ -613,13 +619,13 @@ public class SFParking {
                 lat1 = Double.parseDouble(latlng[1]);
                 lng2 = Double.parseDouble(latlng[2]);
                 lat2 = Double.parseDouble(latlng[3]);
-                numloc = 2;
+                //numloc = 2;
             } else {
                 lng1 = Double.parseDouble(latlng[0]);
                 lat1 = Double.parseDouble(latlng[1]);
                 lng2 = -1;
                 lat2 = -1;
-                numloc = 1;
+                //numloc = 1;
             }
         }
 
@@ -635,11 +641,161 @@ public class SFParking {
         public double getLng2() {
             return lng2;
         }
+        /*
         public int getNumLocations() {
             return numloc;
         }
+        */
     }
 
+    /*
+     * makes a request to SF Park and draws the parking locaions on the map
+     */
+    public void drawParking( GoogleMap map /*, LayoutInflater inflater */) {
+        Location location = new Location("");
+        location.setLatitude(37.792275);
+        location.setLongitude(-122.397089);
 
+        service.retrieveParkingList(location);
+        List park_li = SFParking.service.getParkingList();
+
+        if (service.getStatus().equals("SUCCESS")) {
+
+            for (int i = 0; i < service.getNum_records(); i++) {
+
+                ParkingPlace place = (ParkingPlace) park_li.get(i);
+
+                LocationSFP locsfp = place.getLoc();
+
+                String information = "";
+
+                double latstr = locsfp.getLat1(),
+                        latend = locsfp.getLat2(),
+                        lngstr = locsfp.getLng1(),
+                        lngend = locsfp.getLng2();
+
+                LatLng start = new LatLng(latstr, lngstr);
+                LatLng end = new LatLng(latend, lngend);
+                LatLng mid = new LatLng( (latstr + latend) / 2 ,
+                        (lngstr + lngend) / 2 );
+
+                if (place.getDescription() != null) {
+                    information += place.getDescription() + "\n";
+                }
+
+                if (place.getIntersection() != null) {
+                    information += place.getIntersection() + "\n";
+                }
+
+                if (place.getType() != null) {
+                    information += place.getType().toLowerCase() + " street parking\n";
+                }
+
+                if (place.getOperHours() != null) {
+
+                    List ophr = place.getOperHours();
+
+                    for (int j=0; j < ophr.size(); j++) {
+                        OPHRS ophrs = (OPHRS) ophr.get(j);
+
+                        information += "From: " + ophrs.getFrom() + "\nTo: " + ophrs.getTo()
+                                + "Time: " + ophrs.getBeg() + " to " + ophrs.getEnd() + "\n";
+                    }
+                }
+
+                if (place.getTelNum() != null) {
+                    information += "phone #: " + place.getTelNum() + "\n";
+                }
+
+                if (place.getRates() != null) {
+                    Rate r = (Rate) place.getRates();
+
+                    if (r.getDesc() != null) {
+                        information += r.getDesc()
+                                + "\nrate: " + r.getRate() + " " + r.getRateQualifier()
+                                + "\nrate restriction: " + r.getRateRestriction();
+
+                    } else {
+                        information += "begins: " + r.getBeg() + "\nends: " + r.getEnd()
+                                + "\nrate: " + r.getRate() + " " + r.getRateQualifier()
+                                + "\nrate restriction: " + r.getRateRestriction();
+                    }
+                }
+
+                if (place.getOccSpaces() >= 0) {
+                    information += "parking spaces occupied: "
+                            + place.getOccSpaces() + "\n";
+                }
+
+                if (place.getOperSpaces() >= 0) {
+                    information += "parking spaces operational: "
+                            + place.getOperSpaces() + "\n";
+                }
+
+                if (place.getOccSpaces() >= 0 && place.getOperSpaces() >= 0) {
+                    information += "parking spaces open: "
+                            + (place.getOperSpaces() - place.getOccSpaces()) + "\n";
+                }
+
+                if (place.getNumLocations() > 1) {
+                    Polyline polyline = map.addPolyline(new PolylineOptions()
+                            .add(start, end)
+                            .color(Color.BLUE)
+                            .width(7)
+                            .visible(true)
+                            .geodesic(true));
+
+                    Marker marker = map.addMarker(new MarkerOptions()
+                            .title(place.getName())
+                            .position(mid)
+                            .snippet(information)
+                            .alpha(0.2f)
+                            .icon(BitmapDescriptorFactory.defaultMarker(
+                                    BitmapDescriptorFactory.HUE_BLUE)));
+
+                    //map.setInfoWindowAdapter(new StreetInfoWindow(
+                    //        inflater));
+
+                } else {
+                    Marker marker = map.addMarker(new MarkerOptions()
+                            .title(place.getName())
+                            .position(start)
+                            .snippet(information));
+                }
+            }
+        } else {
+            Log.d(null, "Application can not connect to SF Parking service");
+        }
+    }
+    /*
+    class StreetInfoWindow implements GoogleMap.InfoWindowAdapter {
+        private final View markerView;
+
+        LayoutInflater inflater;
+
+        StreetInfoWindow(LayoutInflater inflater) {
+            this.inflater = inflater;
+
+            markerView = inflater
+                    .inflate(R.layout.custom_info_contents, null);
+        }
+        @Override
+        public View getInfoWindow(Marker marker) {
+
+            return null;
+        }
+        @Override
+        public View getInfoContents(Marker marker) {
+            TextView information = (TextView) markerView.findViewById(R.id.title);
+            information.setText(marker.getTitle());
+
+            information = (TextView) markerView.findViewById(R.id.information);
+            information.setText(marker.getSnippet());
+
+            return markerView;
+        }
+
+    }
+    */
 
 }

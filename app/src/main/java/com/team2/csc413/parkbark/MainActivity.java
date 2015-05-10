@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -169,6 +168,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
+        switch (position) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                mMap.clear();
+                SFParking.service.drawParking(mMap /* , getLayoutInflater() */);
+                break;
+            case 3:
+                break;
+        }
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -179,11 +191,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void onSectionAttached(int number) {
 
         switch (number) {
-            case 1:
+            case 0:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 1:
                 mTitle = getString(R.string.title_section2);
+                break;
+            case 2:
+                mTitle = getString(R.string.title_section_sfpark);
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
@@ -219,17 +234,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id == R.id.action_sfpark) {
-            // calls SFPark API
-            drawParking();
-            return true;
-        }
-
-        if (id == R.id.action_navigation){
-            navigate();
-            return true;
-        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -348,69 +352,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    /**
-     * draws a line between the co-ordinates
-     *
-     * @param loc1
-     * @param loc2
-     */
-    private void addLines(LatLng loc1, LatLng loc2) {
-        mMap
-                .addPolyline((new PolylineOptions())
-                        .add(loc1, loc2).width(7).color(Color.BLUE)
-                        .geodesic(true));
-    }
-
-    /**
-     * adds a marker to the co-ordinates
-     *
-     * @param name
-     * @param loc
-     */
-    public void addMarker(String name, LatLng loc) {
-        mMap.addMarker(new MarkerOptions()
-                .position(loc)
-                .title(name));
-    }
-
-    /**
-     * makes a request to SF Park and draws the parking locaions on the map
-     */
-    public void drawParking() {
-        Location location = new Location("");
-        location.setLatitude(37.792275);
-        location.setLongitude(-122.397089);
-
-
-        SFParking.service.retrieveParkingList(location);
-
-        List park_li = SFParking.service.getParkingList();
-
-        if (SFParking.service.getStatus().equals("SUCCESS")) {
-
-            for (int i = 0; i < SFParking.service.getNum_records(); i++) {
-                SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
-
-
-
-                SFParking.LocationSFP locsfp = place.getLoc();
-
-                if (locsfp.getNumLocations() > 1) {
-                    LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                    LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
-                    addLines(loc1, loc2);
-
-
-                } else {
-                    LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                    addMarker(place.getName(), loc);
-                }
-            }
-        } else {
-            Log.d(null, "Application can not connect to SF Parking service");
-        }
-    }
-
     public void navigate(){
         final Location location = new Location("");
         location.setLatitude(37.792275);
@@ -519,7 +460,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 });
         settingDialog.show();
     }
-
 }
 
 
