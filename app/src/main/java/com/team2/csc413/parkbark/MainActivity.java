@@ -583,6 +583,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     }
     */
+
+    /**
+     * Displays markers on map of all parked locations stored in database.
+     * Markers are only visible in Parking History Tab.
+     */
     public void showHistoryParking(){
         String getUID, getDATE, getTIME, getDURATION, getRESTRICTION;
         double getLAT, getLNG;
