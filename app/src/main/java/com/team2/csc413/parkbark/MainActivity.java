@@ -635,6 +635,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         return myLatLng;
     }
 
+    /**
+     * Selects latitude from last row of database and returns it
+     * @return double myLat or -1.0 if database is empty
+     */
     public double getLAT() {
         double myLAT;
         Cursor cursor = dbAdapter.getAllParkingSpot();
@@ -658,7 +662,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     /**
      * Function that calculates and does a toast for the time to walk back to car.
-     * @param v Current view of program
+     * @param v Current view of progream
      */
     public void timeToWalk (View v){
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
