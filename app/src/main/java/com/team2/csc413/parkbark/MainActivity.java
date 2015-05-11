@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Alarm_Btn = null;
 
     MediaPlayer One_Bark;
-    //MediaPlayer Barks;
+
 
 
     /**
