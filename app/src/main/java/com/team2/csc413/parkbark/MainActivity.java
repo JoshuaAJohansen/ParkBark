@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
@@ -384,6 +385,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         builder.show();
     }
 
+    /**
+     * Set up timer with a alertdialog
+     */
     private void showTimerDialog() {
         LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
         View customDialog = inflater.inflate(R.layout.notification_dialog, null);
@@ -436,6 +440,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                                 if (hourRemain < 10 && minRemain < 10) {
                                     timer.setText("Time remain " + "0" + hourRemain + ":" + "0" + minRemain);
                                 }
+                                if (hourRemain < 10 && minRemain < 1) {
+                                    timer.setText("Time remain less than 1 minute!");
+                                }
                             }
 
                             @Override
@@ -460,6 +467,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 });
         settingDialog.show();
     }
+
 }
 
 
