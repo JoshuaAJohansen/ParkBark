@@ -68,7 +68,7 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
 
     /**
-     * Drop's the table of the database and calls onCreate to create
+     * Drops the table of the database and calls onCreate to create
      * new table with new schema
      *
      * @param db         The database
