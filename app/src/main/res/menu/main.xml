@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.team2.csc413.parkbark.MainActivity">
 
-    <item android:id="@+id/current_location"
-        android:title="@string/current_location"
-        android:icon="@drawable/ic_action_location_found"
-        app:showAsAction="always" />
+
 
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"

@@ -51,7 +51,6 @@ import java.util.*;
 //TODO Include Park button that store park location through SQLite
 
 
-
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
@@ -61,7 +60,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Alarm_Btn = null;
 
     MediaPlayer One_Bark;
-
 
 
     /**
@@ -92,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         setContentView(R.layout.activity_main);
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
-        Alarm_Btn = (ImageButton)findViewById(R.id.Alarm_Btn);
+        Alarm_Btn = (ImageButton) findViewById(R.id.Alarm_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -120,10 +118,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Alarm_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (setNotification == 0){
+                if (setNotification == 0) {
                     setNotification = 1;
                     showTimerDialog();
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Notification already set", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -178,8 +176,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 mMap.clear();
                 SFParking.service.drawParking(mMap /* , getLayoutInflater() */);
                 break;
-            case 3:
-                break;
+
         }
 
         // update the main content by replacing fragments
@@ -192,18 +189,16 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void onSectionAttached(int number) {
 
         switch (number) {
-            case 0:
+            case 1:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 1:
-                mTitle = getString(R.string.title_section2);
-                break;
             case 2:
-                mTitle = getString(R.string.title_section_sfpark);
+                mTitle = getString(R.string.title_section2);
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+
         }
     }
 
@@ -286,7 +281,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 
-    private void setMapUI(){
+    private void setMapUI() {
         mMap.setMyLocationEnabled(true);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMyLocationButtonEnabled(true);
@@ -295,8 +290,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Criteria criteria = new Criteria();
 
         Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-        if (location != null)
-        {
+        if (location != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()), 13));
 
@@ -311,14 +305,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    private void setParkMarker(){
-        LocationManager locationmanager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+    private void setParkMarker() {
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if(location == null){
+        if (location == null) {
             Toast.makeText(getApplicationContext(), "Cannot find Location: location == NULL", Toast.LENGTH_SHORT).show();
-        }else if(ParkMarker == null) {
+        } else if (ParkMarker == null) {
 
-            LatLng PARKED = new LatLng (location.getLatitude(), location.getLongitude());
+            LatLng PARKED = new LatLng(location.getLatitude(), location.getLongitude());
             ParkMarker = mMap.addMarker(new MarkerOptions()
                     .position(PARKED)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
@@ -333,15 +327,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            //One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
-            One_Bark.start();
+            //One_Bark.start();
 
             // Sound for alarm
             //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
             //Barks.start();
 
-        }else{
+        } else {
 
             mMap.clear();
 
@@ -353,7 +347,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    public void navigate(){
+    public void navigate() {
         final Location location = new Location("");
         location.setLatitude(37.792275);
         location.setLongitude(-122.397089);
@@ -417,7 +411,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             minute = Integer.valueOf(editMin.getText().toString());
                         }
                         int totalSec = (hour * 60 * 60) + (minute * 60);
-                        Long time = new GregorianCalendar().getTimeInMillis() + (totalSec*1000);
+                        Long time = new GregorianCalendar().getTimeInMillis() + (totalSec * 1000);
 
                         AlarmManager alarm = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
                         Intent intent = new Intent();
