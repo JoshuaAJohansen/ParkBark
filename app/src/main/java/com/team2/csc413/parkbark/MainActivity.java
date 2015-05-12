@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -31,7 +30,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 
 import android.media.MediaPlayer;
 
@@ -44,7 +42,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.*;
 
@@ -174,7 +171,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 break;
             case 2:
                 mMap.clear();
-                SFParking.service.drawParking(mMap /* , getLayoutInflater() */);
+                SFParking.service.drawParking(mMap);
                 break;
 
         }
@@ -359,7 +356,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li2.get(x);
             parkingPlaces[x] = place.getName();
             SFParking.LocationSFP locsfp = place.getLoc();
-            parkingLoc[x] = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+            parkingLoc[x] = new LatLng(locsfp.getLatPrime(), locsfp.getLngPrime());
         }
 
         AlertDialog.Builder MyListAlertDialog = new AlertDialog.Builder(MainActivity.this);
