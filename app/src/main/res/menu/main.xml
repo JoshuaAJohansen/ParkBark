@@ -11,7 +11,15 @@
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_plusone_standard_off_client"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
+    <item android:id="@+id/action_sfpark"
+        android:title="@string/action_sfpark"
+        android:orderInCategory="101"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_navigation"
+        android:title="@string/action_navigation"
+        android:orderInCategory="102"
+        app:showAsAction="never" />
 </menu>

@@ -3,6 +3,7 @@ package com.team2.csc413.parkbark;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 //used
@@ -67,7 +68,7 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
 
     /**
-     * Drop's the table of the database and calls onCreate to create
+     * Drops the table of the database and calls onCreate to create
      * new table with new schema
      *
      * @param db         The database
@@ -134,9 +135,14 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         return db.query(TABLE_NAME, new String[] {UID, DATE, TIME, LAT, LNG, DURATION, RESTRICTION},
                 null, null, null, null, null, null);
 
-
     }
 
+    /**
+     * After function is called table values in database will be set to null
+     */
+    public void deleteParkingHistory(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, null, null);
 
-
+    }
 }
