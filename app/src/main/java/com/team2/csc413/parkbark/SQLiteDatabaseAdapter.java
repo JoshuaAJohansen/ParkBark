@@ -135,17 +135,14 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         return db.query(TABLE_NAME, new String[] {UID, DATE, TIME, LAT, LNG, DURATION, RESTRICTION},
                 null, null, null, null, null, null);
 
-
     }
 
+    /**
+     * After function is called table values in database will be set to null
+     */
     public void deleteParkingHistory(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, null, null);
 
     }
-
-
-
-
-
 }
