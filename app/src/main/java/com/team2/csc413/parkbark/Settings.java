@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,6 +36,8 @@ public class Settings extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        dbAdapter = new SQLiteDatabaseAdapter(this);
 
         //link button and frame ids
         toggleAlarm = (ToggleButton) findViewById(R.id.toggleAlarm);
@@ -159,8 +162,8 @@ public class Settings extends ActionBarActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Toast.makeText(getApplicationContext(), "Insert code - Clear database",
-                                Toast.LENGTH_LONG).show();
+
+                        dbAdapter.deleteParkingHistory();
 
                         dialog.dismiss();
                     }
