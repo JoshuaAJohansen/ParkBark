@@ -26,19 +26,13 @@
         <receiver android:name=".AlarmReciever"></receiver>
         <activity
             android:name="com.team2.csc413.parkbark.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_main"
             android:parentActivityName="com.team2.csc413.parkbark.SplashScreen" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team2.csc413.parkbark.SplashScreen" />
-        </activity>
-
-        <activity
-            android:name="com.team2.csc413.parkbark.AlertDialog"
-            android:label="AlertDialog">
-            <intent-filter>
-                <action android:name="android.intent.action.ALERT" />
-            </intent-filter>
         </activity>
 
         <activity
