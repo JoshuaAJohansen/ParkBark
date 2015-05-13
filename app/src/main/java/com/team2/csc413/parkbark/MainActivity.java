@@ -368,6 +368,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             One_Bark.start();
 
+
             // Sound for alarm
             //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
             //Barks.start();
