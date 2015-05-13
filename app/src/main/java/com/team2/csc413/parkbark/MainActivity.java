@@ -3,6 +3,7 @@ package com.team2.csc413.parkbark;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.database.sqlite.SQLiteDatabase;
 import android.app.Dialog;
 import android.database.sqlite.SQLiteDatabase;
@@ -243,12 +244,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_sfpark) {
-            // calls SFPark API
-            drawParking();
-            return true;
-        }
-
         if (id == R.id.action_navigation){
             navigate();
             return true;
@@ -347,7 +342,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-            addParkingSpot();
+            //addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
 
             // Adding a media player and sound to media player
