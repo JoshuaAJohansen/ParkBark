@@ -29,6 +29,7 @@ public class Settings extends ActionBarActivity {
     FrameLayout notificationFrame;
     FrameLayout walkingFrame;
     ToggleButton toggleWalk;
+    SQLiteDatabaseAdapter dbAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
