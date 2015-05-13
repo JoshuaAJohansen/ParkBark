@@ -115,16 +115,7 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
     }
 
-    /**
-     * Delete the table when onDestroy is called from setting
-     *
-     */
-    public void onDestroy(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(DROP_TABLE);
-        Log.d("SQLTag", "Delete table");
 
-    }
 
 
     public Cursor getAllParkingSpot(){
@@ -145,4 +136,6 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         Log.d("SQLTag", "Delete table");
 
     }
+
+
 }

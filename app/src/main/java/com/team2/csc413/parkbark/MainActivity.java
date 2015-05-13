@@ -221,6 +221,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             case 1:
                 mTitle = getString(R.string.title_section1);
                 mMap.clear();
+
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
@@ -363,9 +364,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            //One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
-            //One_Bark.start();
+            One_Bark.start();
 
             // Sound for alarm
             //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
