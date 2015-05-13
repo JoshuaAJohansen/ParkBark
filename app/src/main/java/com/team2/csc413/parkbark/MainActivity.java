@@ -63,7 +63,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
 
-    //private SQLiteDatabase database;
+    private SQLiteDatabase database;
 
     ImageButton Alarm_Btn = null;
     int setNotification = 0;
@@ -160,7 +160,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                     //Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Car parked", Toast.LENGTH_SHORT).show();
-                    //addRemoteParkingSpot(currentlocation);
+                    addRemoteParkingSpot(currentlocation);
 
                     Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
@@ -569,7 +569,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             } while (cursor.moveToNext());
         }
-
+        cursor.close();
     }
 
 
@@ -589,9 +589,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             myLAT = cursor.getFloat(3);
             myLNG = cursor.getFloat(4);
             myLatLng = new LatLng(myLAT, myLNG);
+            cursor.close();
             return myLatLng;
         }
         myLatLng = new LatLng(-1, -1);
+        cursor.close();
         return myLatLng;
     }
 
@@ -606,6 +608,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         if (cursor.moveToLast()) {
             myLAT = cursor.getDouble(3);
+            cursor.close();
             return myLAT;
         } else return (-1.0);
     }
@@ -622,6 +625,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if (cursor.moveToLast()) {
 
             myLNG = cursor.getDouble(4);
+            cursor.close();
             return myLNG;
         } else return -1.0;
     }
