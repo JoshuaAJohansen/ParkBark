@@ -3,23 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.team2.csc413.parkbark.MainActivity">
 
-    <item android:id="@+id/current_location"
-        android:title="@string/current_location"
-        android:icon="@drawable/ic_action_location_found"
-        app:showAsAction="always" />
-
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
-        app:showAsAction="never" />
-
-    <item android:id="@+id/action_sfpark"
-        android:title="@string/action_sfpark"
-        android:orderInCategory="101"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_action_settings"
+        app:showAsAction="always" />
 
     <item android:id="@+id/action_navigation"
         android:title="@string/action_navigation"
         android:orderInCategory="102"
         app:showAsAction="never" />
+    
+    
 </menu>

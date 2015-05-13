@@ -9,10 +9,13 @@
 
     <string name="title_section1">ParkBark</string>
     <string name="title_section2">Parking History</string>
-    <string name="title_section3">TBA</string>
+    <string name="title_section3">SF Parking Information</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="current_location">Current Location</string>
+    <string name="textAlarm">Alarm</string>
+    <string name="textNotification">Notification</string>
+    <string name="textClearHistory">Clear History</string>
 </resources>

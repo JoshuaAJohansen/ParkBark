@@ -1,15 +1,18 @@
 package com.team2.csc413.parkbark;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.PendingIntent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.content.Context;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -46,10 +49,11 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
+import java.sql.Time;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 //TODO Include Park button that store park location through SQLite
 
 
@@ -59,16 +63,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
-
-    private SQLiteDatabase database;
-
     ImageButton Alarm_Btn = null;
-    int setNotification = 0;
     MediaPlayer One_Bark;
-    
     //MediaPlayer Barks;
+    int setNotification = 0;
+    boolean alarmOn;
+    boolean barkOn;
+    boolean vibrateOn;
+    boolean walkOn;
+ 
+    public static final String SETTINGS = "AppPref";
     
     SQLiteDatabaseAdapter dbAdapter;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -97,12 +104,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //load preferences from settings. Default value = true
+        SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
+        alarmOn = loadSettings.getBoolean("ALARM", true);
+        barkOn = loadSettings.getBoolean("BARK", true);
+        vibrateOn = loadSettings.getBoolean("VIBRATE", true);
+        walkOn = loadSettings.getBoolean("WALK", true);
 
         dbAdapter = new SQLiteDatabaseAdapter(this);
 
+
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
         TimeToWalk_Button = (ImageButton) findViewById(R.id.TimeToWalk_Btn);
-        Alarm_Btn = (ImageButton)findViewById(R.id.Alarm_Btn);
+        Alarm_Btn = (ImageButton) findViewById(R.id.Alarm_Btn);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -118,11 +132,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         TimeToWalk_Button.setEnabled(false);
-        
+
         //Park Button On-Click listener
         Park_Button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 setParkMarker();
             }
         });
@@ -130,10 +144,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         Alarm_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (setNotification == 0){
+                if (setNotification == 0) {
                     setNotification = 1;
                     showTimerDialog();
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Notification already set", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -158,10 +172,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                     //Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Car parked", Toast.LENGTH_SHORT).show();
+                    addRemoteParkingSpot(currentlocation);
 
                     Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-
+                    TimeToWalk_Button.setEnabled(true);
                 } else {
                     ParkMarker.remove();
 
@@ -170,25 +185,30 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     Park_Button.setBackgroundResource(R.drawable.park_btn);
 
                     ParkMarker = null;
+
+                    TimeToWalk_Button.setEnabled(false);
                 }
             }
         });
+
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
-        switch(position){
+        switch (position) {
             case 0:
                 break;
             case 1:
                 showHistoryParking();
                 break;
             case 2:
+                mMap.clear();
+                SFParking.service.drawParking(mMap);
                 break;
         }
 
-        
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -239,12 +259,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_sfpark) {
-            // calls SFPark API
-            drawParking();
-            return true;
-        }
-
         if (id == R.id.action_navigation){
             navigate();
             return true;
@@ -252,6 +266,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, Settings.class));
             return true;
         }
 
@@ -342,24 +357,22 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
-            
+
             addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            //One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            //One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
             //One_Bark.start();
 
             // Sound for alarm
             //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
             //Barks.start();
-
-        }else{
+        } else {
             //mMap.clear();
             ParkMarker.remove();
-
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
             Park_Button.setBackgroundResource(R.drawable.park_btn);
@@ -370,131 +383,78 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    /**
-     * draws a line between the co-ordinates
-     *
-     * @param loc1 starting location
-     * @param loc2 ending location
-     */
-    private void addLines(LatLng loc1, LatLng loc2) {
-        mMap
-                .addPolyline((new PolylineOptions())
-                        .add(loc1, loc2).width(7).color(Color.BLUE)
-                        .geodesic(true));
-    }
-
-    /**
-     * adds a marker to the co-ordinates
-     *
-     * @param name
-     * @param loc
-     */
-    public void addMarker(String name, LatLng loc) {
-        mMap.addMarker(new MarkerOptions()
-                .position(loc)
-                .title(name));
-    }
-
-    /**
-     * makes a request to SF Park and draws the parking locaions on the map
-     */
-    public void drawParking() {
-        Location location = new Location("");
-        location.setLatitude(37.792275);
-        location.setLongitude(-122.397089);
-
-
-        SFParking.service.retrieveParkingList(location);
-
-        List park_li = SFParking.service.getParkingList();
-
-        if (SFParking.service.getStatus().equals("SUCCESS")) {
-
-            for (int i = 0; i < SFParking.service.getNum_records(); i++) {
-                SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
-
-
-
-                SFParking.LocationSFP locsfp = place.getLoc();
-
-                if (locsfp.getNumLocations() > 1) {
-                    LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                    LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
-                    addLines(loc1, loc2);
-
-
-                } else {
-                    LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                    addMarker(place.getName(), loc);
-                }
-            }
-        } else {
-            Log.d(null, "Application can not connect to SF Parking service");
-        }
-    }
-
     public void addParkingSpot() {
-
         Log.d("SQLTag", "Enter SQL function");
 
 
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-
-
+        
         String date = dateFormat.format(c.getTime());
         String time = timeFormat.format(c.getTime());
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         String duration = "duration";
         String restriction = "restriction";
-
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
-
-
     }
 
-    public void navigate(){
+    public void navigate() {
         final Location location = new Location("");
         location.setLatitude(37.792275);
         location.setLongitude(-122.397089);
+
         SFParking.service.retrieveParkingList(location);
+
         List park_li2 = SFParking.service.getParkingList();
+
         String[] parkingPlaces = new String[SFParking.service.getNum_records()];
+
         final LatLng[] parkingLoc = new LatLng[SFParking.service.getNum_records()];
+
         for (int x = 0; x < SFParking.service.getNum_records(); x++) {
             SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li2.get(x);
+
             parkingPlaces[x] = place.getName();
+
             SFParking.LocationSFP locsfp = place.getLoc();
-            parkingLoc[x] = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+            parkingLoc[x] = new LatLng(locsfp.getLatPrime(), locsfp.getLngPrime());
         }
 
         AlertDialog.Builder MyListAlertDialog = new AlertDialog.Builder(MainActivity.this);
+
         MyListAlertDialog.setTitle("Available Parking Places");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
         builder.setTitle("Available Parking Places");
+
         builder.setItems(parkingPlaces, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
                 final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
-                intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 startActivity(intent);
             }
         });
         builder.show();
     }
 
+    /**
+     * Set up timer with an AlertDialog
+     */
     private void showTimerDialog() {
         LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
         View customDialog = inflater.inflate(R.layout.notification_dialog, null);
+
         final EditText editHour = (EditText) customDialog.findViewById(R.id.edit_hour);
         final EditText editMin = (EditText) customDialog.findViewById(R.id.edit_min);
+
         editHour.setRawInputType(Configuration.KEYBOARD_QWERTY);
         editMin.setRawInputType(Configuration.KEYBOARD_QWERTY);
 
@@ -519,6 +479,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             minute = Integer.valueOf(editMin.getText().toString());
                         }
                         int totalSec = (hour * 60 * 60) + (minute * 60);
+                        Long time = new GregorianCalendar().getTimeInMillis() + (totalSec * 1000);
+
+                        AlarmManager alarm = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this, AlarmReciever.class);
+                        PendingIntent pending = PendingIntent.getBroadcast(MainActivity.this, 1, intent, 0);
+                        alarm.set(AlarmManager.RTC_WAKEUP, time, pending);
 
                         new CountDownTimer(totalSec * 1000, 1000) {
 
@@ -535,17 +502,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                                 if (hourRemain < 10 && minRemain < 10) {
                                     timer.setText("Time remain " + "0" + hourRemain + ":" + "0" + minRemain);
                                 }
+                                if (hourRemain < 10 && minRemain < 1) {
+                                    timer.setText("Time remain less than 1 minute!");
+                                }
                             }
 
                             @Override
                             public void onFinish() {
                                 setNotification = 0;
                                 timer.setText("");
-                                new AlertDialog.Builder(MainActivity.this)
+                                /*new AlertDialog.Builder(MainActivity.this)
                                         .setTitle("Times up")
                                         .setIcon(android.R.drawable.ic_dialog_info)
                                         .setPositiveButton("Ok", null)
-                                        .show();
+                                        .show();*/
                             }
                         }.start();
                     }
@@ -559,8 +529,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 });
         settingDialog.show();
     }
-//TODO fix addRemoteParkingSpot to get lat/long for remote markers
-    /*public void addRemoteParkingSpot(LatLng remoteMarker) {
+
+    public void addRemoteParkingSpot(LatLng remoteMarker) {
 
         Log.d("SQLTag", "Enter SQL function");
 
@@ -574,16 +544,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         String date = dateFormat.format(c.getTime());
         String time = timeFormat.format(c.getTime());
-        double lat = remoteMarker.latitude();
-        double lng = remoteMarker.longitude();
+        double lat = remoteMarker.latitude;
+        double lng = remoteMarker.longitude;
         String duration = "duration";
         String restriction = "restriction";
 
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
     }
-    */
-    public void showHistoryParking(){
+    
+    /**
+     * Displays markers on map of all parked locations stored in database.
+     * Markers are only visible in Parking History Tab.
+     */
+    public void showHistoryParking() {
         String getUID, getDATE, getTIME, getDURATION, getRESTRICTION;
         double getLAT, getLNG;
 
@@ -593,8 +567,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         Cursor cursor = dbAdapter.getAllParkingSpot();
 
-        if(cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 getUID = cursor.getString(0);
                 getDATE = cursor.getString(1);
                 getTIME = cursor.getString(2);
@@ -607,9 +581,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 Marker historyMarker = mMap.addMarker(new MarkerOptions()
                         .position(marker));
 
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
-
+        cursor.close();
     }
 
 
@@ -629,22 +603,35 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             myLAT = cursor.getFloat(3);
             myLNG = cursor.getFloat(4);
             myLatLng = new LatLng(myLAT, myLNG);
+            cursor.close();
             return myLatLng;
         }
         myLatLng = new LatLng(-1, -1);
+        cursor.close();
         return myLatLng;
     }
 
+    /**
+     * Selects latitude from last row of database and returns it
+     *
+     * @return double myLAT or -1.0 if database is empty
+     */
     public double getLAT() {
         double myLAT;
         Cursor cursor = dbAdapter.getAllParkingSpot();
 
         if (cursor.moveToLast()) {
             myLAT = cursor.getDouble(3);
+            cursor.close();
             return myLAT;
         } else return (-1.0);
     }
 
+    /**
+     * Selects longitude from last row of database and returns it
+     *
+     * @return double myLNG or -1.0 if database is empty
+     */
     public double getLNG() {
         double myLNG;
         Cursor cursor = dbAdapter.getAllParkingSpot();
@@ -652,12 +639,17 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if (cursor.moveToLast()) {
 
             myLNG = cursor.getDouble(4);
+            cursor.close();
             return myLNG;
         } else return -1.0;
     }
 
-    //function that calculates and does a toast for the time to walk back to car.
-    public void timeToWalk (View v){
+    /**
+     * Function that calculates and does a toast for the time to walk back to car.
+     *
+     * @param v Current view of progream
+     */
+    public void timeToWalk(View v) {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
@@ -669,7 +661,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         double lat2 = getLAT();
         double lng2 = getLNG();
 
-        double latDistance = Math.toRadians(lat2 -lat1);
+        double latDistance = Math.toRadians(lat2 - lat1);
         double lngDistance = Math.toRadians(lng2 - lng1);
 
         double a = Math.sin(latDistance / 2)
@@ -693,5 +685,3 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 }
-
-
