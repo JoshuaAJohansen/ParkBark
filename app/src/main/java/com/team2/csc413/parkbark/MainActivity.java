@@ -431,7 +431,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     /**
-     * Set up timer with a alertdialog
+     * Set up timer with an AlertDialog
      */
     private void showTimerDialog() {
         LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
