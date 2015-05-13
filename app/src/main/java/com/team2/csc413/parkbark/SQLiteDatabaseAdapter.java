@@ -117,7 +117,6 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
 
 
-
     public Cursor getAllParkingSpot(){
 
         SQLiteDatabase db = this.getReadableDatabase();

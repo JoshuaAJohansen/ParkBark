@@ -687,7 +687,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         double minutes = seconds / 60;
 
-        int finalTime = (int) Math.ceil(minutes / 100.0);
+        int finalTime = (int) Math.ceil(minutes);
 
         Toast.makeText(MainActivity.this, "Time to Walk to Car is " + finalTime + " minutes", Toast.LENGTH_SHORT).show();
     }
