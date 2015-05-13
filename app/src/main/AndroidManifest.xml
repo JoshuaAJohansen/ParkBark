@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -18,10 +20,10 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".AlarmReciever"></receiver>
         <activity
             android:name="com.team2.csc413.parkbark.MainActivity"
             android:label="@string/title_activity_main"
@@ -30,12 +32,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.team2.csc413.parkbark.SplashScreen" />
         </activity>
-
+        <activity
+            android:name="com.team2.csc413.parkbark.AlertDialog"
+            android:label="AlertDialog">
+            <intent-filter>
+                <action android:name="android.intent.action.ALERT" />
+            </intent-filter>
+        </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDADCJ4qR50Y3nqCfcDCbDoxJuaTeEZFCk"/>
     </application>
-
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>

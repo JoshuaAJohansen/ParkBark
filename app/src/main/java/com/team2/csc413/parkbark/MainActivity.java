@@ -1,9 +1,11 @@
 package com.team2.csc413.parkbark;
 
 import android.app.Activity;
-import android.database.sqlite.SQLiteDatabase;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.app.Dialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -46,7 +48,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -66,7 +67,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Alarm_Btn = null;
     int setNotification = 0;
     MediaPlayer One_Bark;
-
     //MediaPlayer Barks;
 
     SQLiteDatabaseAdapter dbAdapter;
@@ -186,9 +186,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 showHistoryParking();
                 break;
             case 2:
+                mMap.clear();
+                SFParking.service.drawParking(mMap);
                 break;
-        }
 
+        }
 
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -209,6 +211,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+
         }
     }
 
@@ -246,7 +249,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             return true;
         }
 
-        if (id == R.id.action_navigation) {
+        if (id == R.id.action_navigation){
             navigate();
             return true;
         }
@@ -349,7 +352,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            //One_Bark=MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            //One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
             //One_Bark.start();
 
@@ -371,95 +374,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-    /**
-     * draws a line between the co-ordinates
-     *
-     * @param loc1 starting location
-     * @param loc2 ending location
-     */
-    private void addLines(LatLng loc1, LatLng loc2) {
-        mMap
-                .addPolyline((new PolylineOptions())
-                        .add(loc1, loc2).width(7).color(Color.BLUE)
-                        .geodesic(true));
-    }
-
-    /**
-     * adds a marker to the co-ordinates
-     *
-     * @param name
-     * @param loc
-     */
-    public void addMarker(String name, LatLng loc) {
-        mMap.addMarker(new MarkerOptions()
-                .position(loc)
-                .title(name));
-    }
-
-    /**
-     * makes a request to SF Park and draws the parking locaions on the map
-     */
-    public void drawParking() {
-        Location location = new Location("");
-        location.setLatitude(37.792275);
-        location.setLongitude(-122.397089);
-
-
-        SFParking.service.retrieveParkingList(location);
-
-        List park_li = SFParking.service.getParkingList();
-
-        if (SFParking.service.getStatus().equals("SUCCESS")) {
-
-            for (int i = 0; i < SFParking.service.getNum_records(); i++) {
-                SFParking.ParkingPlace place = (SFParking.ParkingPlace) park_li.get(i);
-
-
-                SFParking.LocationSFP locsfp = place.getLoc();
-
-                if (locsfp.getNumLocations() > 1) {
-                    LatLng loc1 = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                    LatLng loc2 = new LatLng(locsfp.getLat2(), locsfp.getLng2());
-                    addLines(loc1, loc2);
-
-
-                } else {
-                    LatLng loc = new LatLng(locsfp.getLat1(), locsfp.getLng1());
-                    addMarker(place.getName(), loc);
-                }
-            }
-        } else {
-            Log.d(null, "Application can not connect to SF Parking service");
-        }
-    }
-
-    public void addParkingSpot() {
-
-        Log.d("SQLTag", "Enter SQL function");
-
-
-        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-
-
-        String date = dateFormat.format(c.getTime());
-        String time = timeFormat.format(c.getTime());
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-        String duration = "duration";
-        String restriction = "restriction";
-
-        dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
-
-
-    }
-
     public void navigate() {
-
         final Location location = new Location("");
         location.setLatitude(37.792275);
         location.setLongitude(-122.397089);
@@ -478,8 +393,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             parkingPlaces[x] = place.getName();
 
             SFParking.LocationSFP locsfp = place.getLoc();
-
-            parkingLoc[x] = new LatLng(locsfp.getLat1(), locsfp.getLng1());
+            parkingLoc[x] = new LatLng(locsfp.getLatPrime(), locsfp.getLngPrime());
         }
 
         AlertDialog.Builder MyListAlertDialog = new AlertDialog.Builder(MainActivity.this);
@@ -502,6 +416,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         builder.show();
     }
 
+    /**
+     * Set up timer with a alertdialog
+     */
     private void showTimerDialog() {
         LayoutInflater inflater = (LayoutInflater) MainActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -534,6 +451,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                             minute = Integer.valueOf(editMin.getText().toString());
                         }
                         int totalSec = (hour * 60 * 60) + (minute * 60);
+                        Long time = new GregorianCalendar().getTimeInMillis() + (totalSec * 1000);
+
+                        AlarmManager alarm = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+                        Intent intent = new Intent();
+                        intent.setClass(MainActivity.this, AlarmReciever.class);
+                        PendingIntent pending = PendingIntent.getBroadcast(MainActivity.this, 1, intent, 0);
+                        alarm.set(AlarmManager.RTC_WAKEUP, time, pending);
 
                         new CountDownTimer(totalSec * 1000, 1000) {
 
@@ -550,17 +474,20 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                                 if (hourRemain < 10 && minRemain < 10) {
                                     timer.setText("Time remain " + "0" + hourRemain + ":" + "0" + minRemain);
                                 }
+                                if (hourRemain < 10 && minRemain < 1) {
+                                    timer.setText("Time remain less than 1 minute!");
+                                }
                             }
 
                             @Override
                             public void onFinish() {
                                 setNotification = 0;
                                 timer.setText("");
-                                new AlertDialog.Builder(MainActivity.this)
+                                /*new AlertDialog.Builder(MainActivity.this)
                                         .setTitle("Times up")
                                         .setIcon(android.R.drawable.ic_dialog_info)
                                         .setPositiveButton("Ok", null)
-                                        .show();
+                                        .show();*/
                             }
                         }.start();
                     }

@@ -9,7 +9,7 @@
 
     <string name="title_section1">ParkBark</string>
     <string name="title_section2">Parking History</string>
-    <string name="title_section3">SF Parking Data</string>
+    <string name="title_section3">SF Parking Information</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
