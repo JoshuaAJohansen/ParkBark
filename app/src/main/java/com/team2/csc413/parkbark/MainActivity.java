@@ -5,8 +5,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.database.sqlite.SQLiteDatabase;
-import android.app.Dialog;
-import android.database.sqlite.SQLiteDatabase;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -50,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.Time;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -164,7 +163,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                     Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-
+                    TimeToWalk_Button.setEnabled(true);
                 } else {
                     ParkMarker.remove();
 
@@ -173,6 +172,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     Park_Button.setBackgroundResource(R.drawable.park_btn);
 
                     ParkMarker = null;
+
+                    TimeToWalk_Button.setEnabled(false);
                 }
             }
         });
@@ -516,7 +517,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         settingDialog.show();
     }
 //TODO fix addRemoteParkingSpot to get lat/long for remote markers
-    /*public void addRemoteParkingSpot(LatLng remoteMarker) {
+    public void addRemoteParkingSpot(LatLng remoteMarker) {
 
         Log.d("SQLTag", "Enter SQL function");
 
@@ -530,14 +531,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         String date = dateFormat.format(c.getTime());
         String time = timeFormat.format(c.getTime());
-        double lat = remoteMarker.latitude();
-        double lng = remoteMarker.longitude();
+        double lat = remoteMarker.latitude;
+        double lng = remoteMarker.longitude;
         String duration = "duration";
         String restriction = "restriction";
 
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
-    }*/
+    }
 
     /**
      * Displays markers on map of all parked locations stored in database.
