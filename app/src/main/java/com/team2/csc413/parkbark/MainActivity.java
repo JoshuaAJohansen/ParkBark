@@ -1,16 +1,18 @@
 package com.team2.csc413.parkbark;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.content.Context;
-import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -47,11 +49,11 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.sql.Time;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 //TODO Include Park button that store park location through SQLite
 
 
@@ -61,15 +63,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     Marker ParkMarker = null;
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
-
-    private SQLiteDatabase database;
-
     ImageButton Alarm_Btn = null;
-    int setNotification = 0;
     MediaPlayer One_Bark;
     //MediaPlayer Barks;
-
+    int setNotification = 0;
+    boolean alarmOn;
+    boolean barkOn;
+    boolean vibrateOn;
+    boolean walkOn;
+ 
+    public static final String SETTINGS = "AppPref";
+    
     SQLiteDatabaseAdapter dbAdapter;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -98,8 +104,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //load preferences from settings. Default value = true
+        SharedPreferences loadSettings = getSharedPreferences(SETTINGS,MODE_PRIVATE);
+        alarmOn = loadSettings.getBoolean("ALARM", true);
+        barkOn = loadSettings.getBoolean("BARK", true);
+        vibrateOn = loadSettings.getBoolean("VIBRATE", true);
+        walkOn = loadSettings.getBoolean("WALK", true);
 
         dbAdapter = new SQLiteDatabaseAdapter(this);
+
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
         TimeToWalk_Button = (ImageButton) findViewById(R.id.TimeToWalk_Btn);
@@ -177,6 +190,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 }
             }
         });
+
     }
 
     @Override
@@ -192,8 +206,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 mMap.clear();
                 SFParking.service.drawParking(mMap);
                 break;
-
         }
+
 
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -214,7 +228,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
-
         }
     }
 
@@ -253,6 +266,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, Settings.class));
             return true;
         }
 
@@ -356,11 +370,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             // Sound for alarm
             //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
             //Barks.start();
-
         } else {
             //mMap.clear();
             ParkMarker.remove();
-
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
             Park_Button.setBackgroundResource(R.drawable.park_btn);
@@ -374,12 +386,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void addParkingSpot() {
         Log.d("SQLTag", "Enter SQL function");
 
+
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-
+        
         String date = dateFormat.format(c.getTime());
         String time = timeFormat.format(c.getTime());
         double lat = location.getLatitude();
@@ -516,7 +529,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 });
         settingDialog.show();
     }
-//TODO fix addRemoteParkingSpot to get lat/long for remote markers
+
     public void addRemoteParkingSpot(LatLng remoteMarker) {
 
         Log.d("SQLTag", "Enter SQL function");
@@ -539,7 +552,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
     }
-
+    
     /**
      * Displays markers on map of all parked locations stored in database.
      * Markers are only visible in Parking History Tab.
@@ -672,5 +685,3 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 }
-
-
