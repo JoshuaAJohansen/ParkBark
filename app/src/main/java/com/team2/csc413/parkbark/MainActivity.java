@@ -63,7 +63,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
 
-    private SQLiteDatabase database;
+    //private SQLiteDatabase database;
 
     ImageButton Alarm_Btn = null;
     int setNotification = 0;
