@@ -67,6 +67,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     MediaPlayer One_Bark;
     //MediaPlayer Barks;
     int setNotification = 0;
+    boolean parked = false;
     boolean alarmOn;
     boolean barkOn;
     boolean vibrateOn;
@@ -175,7 +176,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     addRemoteParkingSpot(currentlocation);
 
                     Park_Button.setBackgroundResource(R.drawable.leave_btn);
-
+                    parked = true;
                     TimeToWalk_Button.setEnabled(true);
                 } else {
                     ParkMarker.remove();
@@ -185,7 +186,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     Park_Button.setBackgroundResource(R.drawable.park_btn);
 
                     ParkMarker = null;
-
+                    parked = false;
                     TimeToWalk_Button.setEnabled(false);
                 }
             }
@@ -221,7 +222,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             case 1:
                 mTitle = getString(R.string.title_section1);
                 mMap.clear();
-
+                if (parked == true){
+                LatLng PARKED = getLatLng();
+                ParkMarker = mMap.addMarker(new MarkerOptions()
+                        .position(PARKED)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker)));
+                }
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
@@ -358,15 +364,15 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
-
+            parked = true;
             addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
 
             // Adding a media player and sound to media player
             // On the start button click even the sound will start
-            One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
+            //One_Bark = MediaPlayer.create(MainActivity.this,R.raw.onebark);
 
-            One_Bark.start();
+            //One_Bark.start();
 
 
             // Sound for alarm
@@ -380,7 +386,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Park_Button.setBackgroundResource(R.drawable.park_btn);
 
             ParkMarker = null;
-
+            parked = false;
             TimeToWalk_Button.setEnabled(false);
         }
     }
