@@ -11,8 +11,9 @@
 
     <item android:id="@+id/action_navigation"
         android:title="@string/action_navigation"
-        android:orderInCategory="102"
-        app:showAsAction="never" />
+        android:orderInCategory="99"
+        android:icon="@drawable/ic_action_directions"
+        app:showAsAction="always" />
     
     
 </menu>
