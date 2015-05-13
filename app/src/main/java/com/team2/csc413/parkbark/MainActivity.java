@@ -5,8 +5,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.database.sqlite.SQLiteDatabase;
-import android.app.Dialog;
-import android.database.sqlite.SQLiteDatabase;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -50,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.Time;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -63,7 +62,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
 
-    //private SQLiteDatabase database;
+    private SQLiteDatabase database;
 
     ImageButton Alarm_Btn = null;
     int setNotification = 0;
@@ -160,11 +159,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                     //Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Car parked", Toast.LENGTH_SHORT).show();
-                    //addRemoteParkingSpot(currentlocation);
+                    addRemoteParkingSpot(currentlocation);
 
                     Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-
+                    TimeToWalk_Button.setEnabled(true);
                 } else {
                     ParkMarker.remove();
 
@@ -173,6 +172,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     Park_Button.setBackgroundResource(R.drawable.park_btn);
 
                     ParkMarker = null;
+
+                    TimeToWalk_Button.setEnabled(false);
                 }
             }
         });
@@ -516,7 +517,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         settingDialog.show();
     }
 //TODO fix addRemoteParkingSpot to get lat/long for remote markers
-    /*public void addRemoteParkingSpot(LatLng remoteMarker) {
+    public void addRemoteParkingSpot(LatLng remoteMarker) {
 
         Log.d("SQLTag", "Enter SQL function");
 
@@ -530,14 +531,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         String date = dateFormat.format(c.getTime());
         String time = timeFormat.format(c.getTime());
-        double lat = remoteMarker.latitude();
-        double lng = remoteMarker.longitude();
+        double lat = remoteMarker.latitude;
+        double lng = remoteMarker.longitude;
         String duration = "duration";
         String restriction = "restriction";
 
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
-    }*/
+    }
 
     /**
      * Displays markers on map of all parked locations stored in database.
@@ -569,7 +570,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             } while (cursor.moveToNext());
         }
-
+        cursor.close();
     }
 
 
@@ -589,9 +590,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             myLAT = cursor.getFloat(3);
             myLNG = cursor.getFloat(4);
             myLatLng = new LatLng(myLAT, myLNG);
+            cursor.close();
             return myLatLng;
         }
         myLatLng = new LatLng(-1, -1);
+        cursor.close();
         return myLatLng;
     }
 
@@ -606,6 +609,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         if (cursor.moveToLast()) {
             myLAT = cursor.getDouble(3);
+            cursor.close();
             return myLAT;
         } else return (-1.0);
     }
@@ -622,6 +626,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         if (cursor.moveToLast()) {
 
             myLNG = cursor.getDouble(4);
+            cursor.close();
             return myLNG;
         } else return -1.0;
     }
