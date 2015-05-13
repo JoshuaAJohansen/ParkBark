@@ -379,6 +379,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
+
         String date = dateFormat.format(c.getTime());
         String time = timeFormat.format(c.getTime());
         double lat = location.getLatitude();
