@@ -160,6 +160,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
                     //Toast.makeText(getApplicationContext(), Text, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getApplicationContext(), "Car parked", Toast.LENGTH_SHORT).show();
+                    //addRemoteParkingSpot(currentlocation);
 
                     Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
@@ -342,7 +343,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             Park_Button.setBackgroundResource(R.drawable.leave_btn);
 
-            //addParkingSpot();
+            addParkingSpot();
             TimeToWalk_Button.setEnabled(true);
 
             // Adding a media player and sound to media player
@@ -367,6 +368,24 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
             TimeToWalk_Button.setEnabled(false);
         }
+    }
+
+    public void addParkingSpot() {
+        Log.d("SQLTag", "Enter SQL function");
+
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
+        String date = dateFormat.format(c.getTime());
+        String time = timeFormat.format(c.getTime());
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        String duration = "duration";
+        String restriction = "restriction";
+        dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
     }
 
     public void navigate() {
@@ -518,8 +537,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
 
-    }
-    */
+    }*/
 
     /**
      * Displays markers on map of all parked locations stored in database.
