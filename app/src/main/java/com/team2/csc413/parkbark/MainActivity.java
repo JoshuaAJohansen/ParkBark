@@ -7,7 +7,6 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -54,7 +53,7 @@ import java.util.Calendar;
 
 //TODO Include Park button that store park location through SQLite
 
-\
+
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
