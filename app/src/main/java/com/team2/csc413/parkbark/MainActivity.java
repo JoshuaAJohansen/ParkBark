@@ -411,9 +411,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     public void navigate() {
-        final Location location = new Location("");
-        location.setLatitude(37.792275);
-        location.setLongitude(-122.397089);
+        LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        final Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         SFParking.service.retrieveParkingList(location);
 
@@ -444,7 +443,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Toast.makeText(getApplicationContext(), "This is num:"+which, Toast.LENGTH_LONG).show();
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude() + "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
+                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?" + "saddr=" + location.getLatitude()+ "," + location.getLongitude() + "&daddr=" + parkingLoc[which].latitude + "," + parkingLoc[which].longitude));
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 startActivity(intent);
             }
