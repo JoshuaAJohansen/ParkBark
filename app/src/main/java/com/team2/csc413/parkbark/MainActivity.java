@@ -56,7 +56,7 @@ import java.util.Calendar;
 
 //TODO Include Park button that store park location through SQLite
 
-
+\
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
@@ -391,6 +391,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
+    /**
+     * Calls insertParkingSpot
+     */
     public void addParkingSpot() {
         Log.d("SQLTag", "Enter SQL function");
 
@@ -654,7 +657,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     /**
      * Function that calculates and does a toast for the time to walk back to car.
      *
-     * @param v Current view of progream
+     * @param v Current view of program
      */
     public void timeToWalk(View v) {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
