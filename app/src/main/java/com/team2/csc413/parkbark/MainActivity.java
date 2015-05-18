@@ -8,7 +8,6 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.database.Cursor;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.content.Context;
