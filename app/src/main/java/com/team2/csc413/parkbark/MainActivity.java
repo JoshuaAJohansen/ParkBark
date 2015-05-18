@@ -419,7 +419,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         List park_li2 = SFParking.service.getParkingList();
 
         String[] parkingPlaces = new String[SFParking.service.getNum_records()];
-
         final LatLng[] parkingLoc = new LatLng[SFParking.service.getNum_records()];
 
         for (int x = 0; x < SFParking.service.getNum_records(); x++) {
