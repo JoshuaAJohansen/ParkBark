@@ -395,7 +395,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void addParkingSpot() {
         Log.d("SQLTag", "Enter SQL function");
 
-
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Calendar c = Calendar.getInstance();
@@ -538,6 +537,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         settingDialog.show();
     }
 
+    /**
+     * Method adds remote parking spot to the database by retrieving LatLng coordinates by clicking
+     * on the map
+     *
+     * @param remoteMarker LatLng object returned from tapping on map.
+     */
     public void addRemoteParkingSpot(LatLng remoteMarker) {
 
         Log.d("SQLTag", "Enter SQL function");
@@ -545,13 +550,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        Calendar c = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MMM:dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
-
-        String date = dateFormat.format(c.getTime());
-        String time = timeFormat.format(c.getTime());
+        String date = dateFormat.format(calendar.getTime());
+        String time = timeFormat.format(calendar.getTime());
         double lat = remoteMarker.latitude;
         double lng = remoteMarker.longitude;
         String duration = "duration";

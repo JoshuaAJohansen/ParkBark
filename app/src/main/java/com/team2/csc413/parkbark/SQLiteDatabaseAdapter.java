@@ -6,21 +6,13 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-//used
+
 import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
-//TODO Create method for reading from database
-
-/**
- * Created by kevin on 4/24/15.
- */
-
-//
 public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
     //Specify database column tags
-
     private static final String TABLE_NAME = "PARK_HISTORY";
     private static final String UID = "_id";
     private static final String DATE = "DATE";
@@ -36,7 +28,6 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
 
     //Database Creation String
-    //NOTE: should be? "_integer... "_text ... with space in front of quotes for form "_id integ..."
     private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_NAME + "("
             + UID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + DATE + " TEXT NOT NULL, "
@@ -47,8 +38,10 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
             + RESTRICTION
             + ")";
 
+
     private static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME + " IF EXISTS";
 
+    //SQLiteDatabaseAdapter constructor
     public SQLiteDatabaseAdapter(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -57,7 +50,7 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
     /**
      * Creates database and the table using the string, DATABASE_CREATE
      *
-     * @param db         The database
+     * @param db        The database
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -132,7 +125,9 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
      * After function is called table values in database will be set to null
      */
     public void deleteParkingHistory(){
+
         SQLiteDatabase db = this.getWritableDatabase();
+
         db.delete(TABLE_NAME, null, null);
         Log.d("SQLTag", "Delete table");
 
