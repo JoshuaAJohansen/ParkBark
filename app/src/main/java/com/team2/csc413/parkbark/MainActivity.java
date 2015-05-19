@@ -50,9 +50,9 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-//TODO Include Park button that store park location through SQLite
-
-
+/**
+ * Contains google map, the buttons,
+ */
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     GoogleMap mMap;
@@ -60,8 +60,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     ImageButton Park_Button = null;
     ImageButton TimeToWalk_Button = null;
     ImageButton Alarm_Btn = null;
-    MediaPlayer One_Bark;
-    //MediaPlayer Barks;
     int setNotification = 0;
     boolean parked = false;
     boolean alarmOn;
@@ -109,7 +107,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         walkOn = loadSettings.getBoolean("WALK", true);
 
         dbAdapter = new SQLiteDatabaseAdapter(this);
-
 
         Park_Button = (ImageButton) findViewById(R.id.Park_Btn);
         TimeToWalk_Button = (ImageButton) findViewById(R.id.TimeToWalk_Btn);
@@ -190,6 +187,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     }
 
+    /**
+     *
+     *
+     * @param position
+     */
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 

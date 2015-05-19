@@ -11,7 +11,6 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 //TODO Create method for reading from database
-//TODO Create method for deleting the database (from setting)
 
 /**
  * Created by kevin on 4/24/15.
@@ -81,7 +80,6 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    //TODO find way to generate current date and time.
     /**
      * Inserts row with data of parking spot to the database. Information
      * is generated through location information.
@@ -115,8 +113,12 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
     }
 
-
-
+    /**
+     * Method returns a cursor of the readable database query
+     *
+     * @return db.query(TABLE_NAME, new String[] {UID, DATE, TIME, LAT, LNG, DURATION, RESTRICTION},
+            null, null, null, null, null, null)
+     */
     public Cursor getAllParkingSpot(){
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -135,6 +137,5 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
         Log.d("SQLTag", "Delete table");
 
     }
-
 
 }
