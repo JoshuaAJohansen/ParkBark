@@ -50,8 +50,10 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+//TODO add main class javadoc
+
 /**
- * Contains google map, the buttons,
+ * Main class where...
  */
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -188,9 +190,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     /**
+     * Calls showHistoryParking if 'Parking History' pressed and SFParking.service.drawParking()
+     * if 'SF Parking Information' is pressed in navigation drawer.
      *
-     *
-     * @param position
+     * @param position      Position of item selected in navigation drawer.
      */
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -214,6 +217,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                 .commit();
     }
+
+    /**
+     * @param number
+     */
 
     public void onSectionAttached(int number) {
         switch (number) {
@@ -343,6 +350,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
+    /**
+     * Sets Marker on map based on state of the park button. If 'Parked', 'Time to Walk' button is
+     * enabled and car marker is displayed on map. If 'Park button' is toggled to off then the car
+     * marker is removed, and 'Time to Walk' button is disabled.
+     */
     private void setParkMarker() {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -377,7 +389,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             //Barks=MediaPlayer.create(MainActivity.this,R.raw.barksound);
             //Barks.start();
         } else {
-            //mMap.clear();
             ParkMarker.remove();
             Toast.makeText(getApplicationContext(), "Leaving Parking Spot", Toast.LENGTH_SHORT).show();
 
