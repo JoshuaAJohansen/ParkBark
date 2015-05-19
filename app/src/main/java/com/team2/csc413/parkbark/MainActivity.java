@@ -51,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 //TODO add main class javadoc
+//TODO add onsectionattached javadoc comment
 
 /**
  * Main class where...
@@ -219,6 +220,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     /**
+     *
      * @param number
      */
 
