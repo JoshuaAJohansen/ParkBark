@@ -78,7 +78,7 @@ public class SFParking {
     /**
      * returns the timestamp of when the availability data response was updated for the request
      *
-     * @return avail_update_t
+     * @return avail_update_t Timestamp
      */
     public String getAvail_update_t() {
         return avail_update_t;
@@ -87,15 +87,15 @@ public class SFParking {
     /**
      * returns timestamp of when the associated request was originally received by SFMTA
      *
-     * @return avail_request_t
+     * @return avail_request_t Timestamp
      */
     public String getAvail_request_t() { return avail_request_t; }
 
     /**
      * retreives a list of parking locations from SF Park
      *
-     * @param loc
-     * @throws java.io.IOException
+     * @param loc Current location
+     * @throws java.io.IOException Error reading SFParking.
      */
     public void retrieveParkingList(Location loc) {
         URL serviceURL = createURL(loc);
@@ -114,7 +114,7 @@ public class SFParking {
      *
      * @param in                            return type InputStream, created from a URL instance
      * @return readParkingList(JsonReader)  method returns an instance of ArrayList<ParkingPlace>
-     * @throws IOException
+     * @throws IOException                  Error reading SFParking
      */
     private List readStreamSFP(InputStream in) throws IOException {
 
@@ -163,7 +163,7 @@ public class SFParking {
      * @param reader        this is an instance of Json Reader used to parse information collected
      *                      from SF Park
      * @return parking      this is an instance of ArrayList<ParkingPlace>
-     * @throws IOException
+     * @throws IOException  Error when passing
      */
     private List readParkingList(JsonReader reader) throws IOException {
         List parking = new ArrayList();
@@ -225,7 +225,7 @@ public class SFParking {
      *                              collected from SF Park
      * @return new ParkingPlace     creates and returns a new instance of ParkingPlace containing
      *                              information collected from SF Park
-     * @throws IOException
+     * @throws IOException          Error when parsing
      */
     private ParkingPlace readAVL(JsonReader reader) throws IOException {
         String reader_s;
@@ -302,7 +302,7 @@ public class SFParking {
      * @return ophrsList    returns an ArrayList<OPHRS> containing the operational hours schedule of
      *                      a particular parking location, this information is stored in an instance
      *                      of ParkingPlace
-     * @throws IOException
+     * @throws IOException  Error fetching data
      */
     private List readOPHRS(JsonReader reader) throws IOException {
         List<OPHRS> ophrsList = new ArrayList<OPHRS>();
@@ -383,7 +383,7 @@ public class SFParking {
      * @return rates        returns an ArrayList<Rate> containing one or several different rates of
      *                      a particular parking location, this information is stored in an instance
      *                      of ParkingPlace
-     * @throws IOException
+     * @throws IOException  Error fetching data
      */
     private List readRates(JsonReader reader) throws IOException {
         List<Rate> rates = new ArrayList<Rate>();

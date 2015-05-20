@@ -1,5 +1,7 @@
 package com.team2.csc413.parkbark;
 
+
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -50,11 +52,9 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-//TODO add main class javadoc
-//TODO add onsectionattached javadoc comment
 
 /**
- * Main class where...
+ * Main Activity class that hold map fragment and navigation drawer.
  */
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -220,8 +220,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     /**
-     *
-     * @param number
+     * The choice number generated from selecting Navigation Drawer options
+     * @param number the number choices that correspond to navigation drawer options
      */
 
     public void onSectionAttached(int number) {
@@ -245,6 +245,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
+    /**
+     * Restore the Action bar that was displayed in view
+     */
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -253,6 +256,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
 
+    /**
+     *  Create the menu in the action bar
+     * @param menu the menu generated from menu import
+     * @return True to make check if menu has been created
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -266,6 +274,11 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Handles action bar items click.
+     * @param item the items in the menu from action bar
+     * @return clicked item will be true.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -312,6 +325,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         public PlaceholderFragment() {
         }
 
+        /**
+         * Create the root view for main activity screen
+         * @param inflater              Inflater that size screen.
+         * @param container             Contain the view.
+         * @param savedInstanceState    Instance state stored.
+         * @return
+         */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -319,6 +339,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             return rootView;
         }
 
+        /**
+         * Attach the navigation drawer into the activity.
+         * @param activity this activity.
+         */
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
@@ -327,7 +351,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
     }
 
-
+    /**
+     * Set the Map on Main activity start.
+     */
     private void setMapUI() {
         mMap.setMyLocationEnabled(true);
         UiSettings mUiSettings = mMap.getUiSettings();
@@ -423,6 +449,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         dbAdapter.insertParkingSpot(date, time, lat, lng, duration, restriction);
     }
 
+    /**
+     * Navigation option for SFParking service in response to current location.
+     */
     public void navigate() {
         LocationManager locationmanager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         final Location location = locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER);

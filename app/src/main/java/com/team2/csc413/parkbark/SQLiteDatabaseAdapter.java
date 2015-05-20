@@ -1,5 +1,7 @@
 package com.team2.csc413.parkbark;
 
+
+
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,6 +11,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
+/**
+ * The SQlite adapter that serve as interface between SQLite database and Activity
+ */
 public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
     //Specify database column tags
@@ -40,7 +45,10 @@ public class SQLiteDatabaseAdapter extends SQLiteOpenHelper {
 
     private static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME + " IF EXISTS";
 
-    //SQLiteDatabaseAdapter constructor
+    /**
+     * Constructor that access the SQLiteDatabaseAdapter
+     * @param context The context of main activity
+     */
     public SQLiteDatabaseAdapter(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;

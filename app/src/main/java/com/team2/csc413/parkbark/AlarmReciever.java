@@ -7,14 +7,16 @@ import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.widget.Toast;
 
-/**
- * Created by Michael on 5/7/15.
- */
 
 /**
  * Receieve alarm notifications
  */
 public class AlarmReciever extends BroadcastReceiver {
+    /**
+     * Pass in required alarm method when onRecieve is called
+     * @param context the current context
+     * @param intent the intent for requested activity
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         //Toast.makeText(context, "This is alarm", Toast.LENGTH_LONG).show();

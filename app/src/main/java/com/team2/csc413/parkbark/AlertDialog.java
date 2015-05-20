@@ -5,15 +5,17 @@ import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
-/**
- * Created by Michael on 5/8/15.
- */
 
 /**
- * Activity after alarm is triggered
+ * The Activity that activate an alert dialog when alarm is triggered
  */
 public class AlertDialog extends Activity {
     MediaPlayer Three_Barks;
+
+    /**
+     * Create the alert Dialog
+     * @param savedInstanceState the saved instance state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

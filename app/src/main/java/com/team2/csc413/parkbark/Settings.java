@@ -1,5 +1,6 @@
 package com.team2.csc413.parkbark;
 
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +17,9 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-
+/**
+ * Provide the Setting activity that give users the choice to customize this application
+ */
 public class Settings extends ActionBarActivity {
 
     boolean alarm;
@@ -32,6 +35,10 @@ public class Settings extends ActionBarActivity {
     ToggleButton toggleWalk;
     SQLiteDatabaseAdapter dbAdapter;
 
+    /**
+     * Create the activity for Setting activity.
+     * @param savedInstanceState the instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +78,11 @@ public class Settings extends ActionBarActivity {
 
     }
 
-
+    /**
+     * The options menu for setting activity
+     * @param menu the menu for setting
+     * @return true for menu creation check
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -79,6 +90,11 @@ public class Settings extends ActionBarActivity {
         return true;
     }
 
+    /**
+     * Return the options selected in the menu
+     * @param item the item in menu
+     * @return the true with item option.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -106,6 +122,10 @@ public class Settings extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Change the option in the setting activity
+     * @param view new view setting.
+     */
     public void onToggleClicked(View view) {
         // Check toggle button position
         boolean on = ((ToggleButton) view).isChecked();
@@ -138,6 +158,10 @@ public class Settings extends ActionBarActivity {
         }
     }
 
+    /**
+     * Change the setting when button is clicked
+     * @param view the view that will be changed.
+     */
     public void onButtonClicked(View view) {
         switch (view.getId()) {
             case R.id.clear:
@@ -178,6 +202,10 @@ public class Settings extends ActionBarActivity {
         }
     }
 
+    /**
+     * Change the view when check box is clicked
+     * @param view the view that will be changed.
+     */
     public void onCheckboxClicked(View view) {
         // Is the view now checked?
         boolean checked = ((CheckBox) view).isChecked();

@@ -95,6 +95,14 @@ public class NavigationDrawerFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    /**
+     * Create the view in which the navigation drawer will be stationed in.
+     *
+     * @param inflater The layout that set an enough size for the navigation drawer.
+     * @param container Contains the view where navigation drawer will be in.
+     * @param savedInstanceState The state in which navigation drawer will be saved.
+     * @return The navigation drawer view.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,6 +127,10 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerListView;
     }
 
+    /**
+     * Check if Navigation Drawer is open
+     * @return the drawerLayout if drawer is open.
+     */
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
@@ -150,6 +162,12 @@ public class NavigationDrawerFragment extends Fragment {
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
+            /**
+             * The drawer will be collapse when being called
+             *
+             * @param drawerView the view indicating the drawer from activity.
+             */
+
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -160,6 +178,11 @@ public class NavigationDrawerFragment extends Fragment {
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
+            /**
+             * The drawer will be slide into view when being called
+             *
+             * @param drawerView the view indicating the drawer from activity.
+             */
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -210,6 +233,11 @@ public class NavigationDrawerFragment extends Fragment {
         }
     }
 
+    /**
+     * Function attaches the navigation drawer onto main activity.
+     *
+     * @param activity the activity that is being attached to.
+     */
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -220,18 +248,32 @@ public class NavigationDrawerFragment extends Fragment {
         }
     }
 
+    /**
+     * Detach the Navigation Drawer.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
     }
 
+    /**
+     * Saves the instance state of the navigation drawer so that it keeps the last state
+     * where user last clicked.
+     *
+     * @param outState the state that will be saved.
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
+    /**
+     * Change the configuration of the navigation drawer according to user interaction
+     *
+     * @param newConfig the new configuration passed in from gui
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -239,6 +281,11 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * The options menu for Navigation Drawer
+     * @param menu      the menu for options menu
+     * @param inflater  inflator to create space.
+     */
     @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             // If the drawer is open, show the global app actions in the action bar. See also
@@ -250,6 +297,11 @@ public class NavigationDrawerFragment extends Fragment {
             super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * Select the item in options menu
+     * @param item the item in the menu
+     * @return true when an option is clicked
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {

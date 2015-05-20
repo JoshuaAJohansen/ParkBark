@@ -5,9 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+/**
+ * This activity creates the splash screen view
+ */
 public class SplashScreen extends Activity {
 
 
+    /**
+     * Create the activity for Slash screen
+     * @param savedInstanceState the instance state.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
@@ -30,6 +37,9 @@ public class SplashScreen extends Activity {
         time.start();
     }
 
+    /**
+     * Pause the Activity.
+     */
     protected void onPause() {
         super.onPause();
         finish();
